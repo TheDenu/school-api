@@ -1,3 +1,69 @@
+<?php
+session_start();
+
+if ($_SERVER['REQUEST_METHOD'] === 'POST') {
+    $email = trim($_POST['email'] ?? '');
+    $password = $_POST['password'] ?? '';
+
+    $response = makeRequest($email, $password);
+
+    // ✅ Проверяем success И token
+    if ($response['success'] && isset($response['token'])) {
+        $_SESSION['admin'] = true;
+        $_SESSION['token'] = $response['token'];
+        header('Location: adminPanel.php');
+        exit;
+    } else {
+        $error = $response['message'] ?? 'Ошибка авторизации';
+        error_log("Login failed: " . print_r($response, true));
+    }
+}
+
+function makeRequest($email, $password)
+{
+    $ch = curl_init();
+
+    $jsonData = json_encode([
+        'email' => $email,
+        'password' => $password
+    ]);
+
+    curl_setopt_array($ch, [
+        CURLOPT_URL => 'http://127.0.0.1:8000/school-api/auth',
+        CURLOPT_RETURNTRANSFER => true,
+        CURLOPT_POST => true,
+        CURLOPT_POSTFIELDS => $jsonData,
+        CURLOPT_HTTPHEADER => [
+            'Accept: application/json',
+            'Content-Type: application/json'
+        ],
+        CURLOPT_TIMEOUT => 30,
+        CURLOPT_VERBOSE => true
+    ]);
+
+    $response = curl_exec($ch);
+    $httpCode = curl_getinfo($ch, CURLINFO_HTTP_CODE);
+    $error = curl_error($ch);
+
+    $data = json_decode($response, true) ?: [];
+
+    if ($httpCode === 200 && isset($data['token'])) {
+        return [
+            'success' => true,
+            'token' => $data['token']
+        ];
+    }
+
+    return [
+        'success' => false,
+        'message' => $data['message'] ?? 'Нет token в ответе API',
+        'http_code' => $httpCode,
+        'has_token' => isset($data['token']),
+        'response' => $response
+    ];
+}
+?>
+
 <!DOCTYPE html>
 <html lang="ru">
 
@@ -5,123 +71,190 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Админ-панель - Вход</title>
-    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.2/dist/css/bootstrap.min.css" rel="stylesheet">
-    <link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css" rel="stylesheet">
     <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
         body {
             background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
             min-height: 100vh;
+            font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            padding: 1rem;
         }
 
         .login-card {
+            background: rgba(255, 255, 255, 0.1);
             backdrop-filter: blur(10px);
             border: 1px solid rgba(255, 255, 255, 0.2);
+            border-radius: 20px;
+            padding: 2.5rem;
+            width: 100%;
+            max-width: 420px;
+            box-shadow: 0 20px 40px rgba(0, 0, 0, 0.1);
+        }
+
+        .login-header {
+            text-align: center;
+            margin-bottom: 2rem;
+        }
+
+        .login-header h2 {
+            color: white;
+            font-weight: 700;
+            font-size: 2rem;
+            margin-bottom: 0.5rem;
+        }
+
+        .login-header p {
+            color: rgba(255, 255, 255, 0.7);
+            font-size: 1rem;
+        }
+
+        .form-group {
+            margin-bottom: 1.5rem;
+        }
+
+        .form-label {
+            color: white;
+            font-weight: 600;
+            display: block;
+            margin-bottom: 0.5rem;
+            font-size: 0.95rem;
+        }
+
+        .input-group {
+            position: relative;
+            display: flex;
+            align-items: center;
+        }
+
+        .input-group-text {
+            background: rgba(255, 255, 255, 0.2);
+            color: rgba(255, 255, 255, 0.8);
+            border: none;
+            padding: 0.75rem 1rem;
+            border-radius: 12px 0 0 12px;
+            font-size: 1.1rem;
+        }
+
+        .form-control {
+            background: rgba(255, 255, 255, 0.9);
+            border: 1px solid rgba(255, 255, 255, 0.3);
+            border-left: none;
+            padding: 0.75rem 1rem;
+            border-radius: 0 12px 12px 0;
+            font-size: 1rem;
+            width: 100%;
+            transition: all 0.3s ease;
+        }
+
+        .form-control:focus {
+            outline: none;
+            background: white;
+            border-color: #4dabf7;
+            box-shadow: 0 0 0 3px rgba(77, 171, 247, 0.1);
         }
 
         .error-field {
             border-color: #dc3545 !important;
-            box-shadow: 0 0 0 0.2rem rgba(220, 53, 69, 0.25);
+            box-shadow: 0 0 0 3px rgba(220, 53, 69, 0.2);
+            background: #ffe6e6;
         }
 
         .error-message {
             color: #dc3545;
             font-size: 0.875rem;
             margin-top: 0.25rem;
+            display: none;
+        }
+
+        .btn-login {
+            background: linear-gradient(135deg, #4dabf7 0%, #3b82f6 100%);
+            border: none;
+            color: white;
+            padding: 0.875rem;
+            width: 100%;
+            border-radius: 12px;
+            font-weight: 600;
+            font-size: 1.05rem;
+            cursor: pointer;
+            transition: all 0.3s ease;
+            text-decoration: none;
+            display: block;
+            text-align: center;
+        }
+
+        .btn-login:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 10px 25px rgba(77, 171, 247, 0.4);
+        }
+
+        .alert-danger {
+            background: rgba(220, 53, 69, 0.15);
+            border: 1px solid rgba(220, 53, 69, 0.3);
+            color: #dc3545;
+            padding: 0.75rem 1rem;
+            border-radius: 8px;
+            margin-bottom: 1rem;
+            display: none;
+        }
+
+        @media (max-width: 480px) {
+            .login-card {
+                padding: 2rem 1.5rem;
+                margin: 1rem;
+            }
         }
     </style>
 </head>
 
-<body class="d-flex align-items-center justify-content-center p-3">
-    <div class="card login-card shadow-lg" style="max-width: 420px; width: 100%;">
-        <div class="card-body p-5">
-            <div class="text-center mb-4">
-                <i class="fas fa-graduation-cap fa-3x text-primary mb-3"></i>
-                <h2 class="fw-bold text-white">Админ-панель</h2>
-                <p class="text-white-50">Войдите для управления курсами</p>
+<body>
+    <div class="login-card">
+        <div class="login-header">
+            <h2>Админ-панель</h2>
+            <p>Войдите для управления курсами</p>
+        </div>
+
+        <?php if (isset($response)): ?>
+            <div style="background: #f8f9fa; padding: 1rem; margin: 1rem 0; font-family: monospace;">
+                <strong>API Debug:</strong><br>
+                Success: <?= $response['success'] ? 'YES' : 'NO' ?><br>
+                Token: <?= isset($response['token']) ? 'YES' : 'NO' ?><br>
+                HTTP: <?= $response['http_code'] ?? 'N/A' ?><br>
+                Message: <?= htmlspecialchars($response['message'] ?? 'N/A') ?>
+            </div>
+        <?php endif; ?>
+
+        <form method="POST" action="index.php">
+            <div class="form-group">
+                <label class="form-label">Email</label>
+                <div class="input-group">
+                    <span class="input-group-text">📧</span>
+                    <input type="email" class="form-control" name="email" placeholder="admin@example.com" value="<?= htmlspecialchars($email ?? '') ?>">
+                </div>
+                <div class="error-message" id="email-error"></div>
             </div>
 
-            <!-- Ошибка авторизации -->
-            <div class="alert alert-danger d-none" id="auth-error"></div>
-
-            <form id="loginForm">
-                <div class="mb-4">
-                    <label class="form-label fw-semibold text-white">Email</label>
-                    <div class="input-group">
-                        <span class="input-group-text"><i class="fas fa-envelope"></i></span>
-                        <input type="email" class="form-control" name="email" placeholder="admin@example.com" required>
-                    </div>
-                    <div class="error-message d-none" id="email-error"></div>
+            <div class="form-group">
+                <label class="form-label">Пароль</label>
+                <div class="input-group">
+                    <span class="input-group-text">🔒</span>
+                    <input type="password" class="form-control" name="password" placeholder="••••••••">
                 </div>
+                <div class="error-message" id="password-error"></div>
+            </div>
 
-                <div class="mb-4">
-                    <label class="form-label fw-semibold text-white">Пароль</label>
-                    <div class="input-group">
-                        <span class="input-group-text"><i class="fas fa-lock"></i></span>
-                        <input type="password" class="form-control" name="password" placeholder="••••••••" required>
-                    </div>
-                    <div class="error-message d-none" id="password-error"></div>
-                </div>
-
-                <button type="submit" class="btn btn-primary w-100 py-2 fw-semibold">
-                    <i class="fas fa-sign-in-alt me-2"></i>Войти
-                </button>
-            </form>
-        </div>
+            <button type="submit" class="btn-login">
+                Войти
+            </button>
+        </form>
     </div>
-
-    <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.2/dist/js/bootstrap.bundle.min.js"></script>
-    <script>
-        // Клиентская валидация
-        document.getElementById('loginForm').addEventListener('submit', function(e) {
-            e.preventDefault();
-            const email = this.email.value;
-            const password = this.password.value;
-            let valid = true;
-
-            // Очистка ошибок
-            document.querySelectorAll('.error-field, .error-message').forEach(el => {
-                el.classList.add('d-none');
-                el.classList.remove('error-field');
-            });
-
-            if (!email) {
-                document.querySelector('[name="email"]').classList.add('error-field');
-                document.getElementById('email-error').textContent = 'Email обязателен';
-                document.getElementById('email-error').classList.remove('d-none');
-                valid = false;
-            }
-
-            if (!password) {
-                document.querySelector('[name="password"]').classList.add('error-field');
-                document.getElementById('password-error').textContent = 'Пароль обязателен';
-                document.getElementById('password-error').classList.remove('d-none');
-                valid = false;
-            }
-
-            if (valid) {
-                // AJAX запрос к login.php
-                fetch('login.php', {
-                        method: 'POST',
-                        headers: {
-                            'Content-Type': 'application/x-www-form-urlencoded'
-                        },
-                        body: new URLSearchParams({
-                            email,
-                            password
-                        })
-                    })
-                    .then(res => res.json())
-                    .then(data => {
-                        if (data.success) {
-                            window.location.href = 'courses.php';
-                        } else {
-                            document.getElementById('auth-error').textContent = data.message;
-                            document.getElementById('auth-error').classList.remove('d-none');
-                        }
-                    });
-            }
-        });
-    </script>
 </body>
 
 </html>

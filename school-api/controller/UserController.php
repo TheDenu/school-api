@@ -44,8 +44,7 @@ class UserController extends BaseController
     {
         if (empty($input['email']) || empty($input['password'])) {
             $this->sendValidationErrors([
-                'message' => 'Invalid fields',
-                'errors' => ['input' => 'Email и пароль обязательны']
+                ['input' => 'Email и пароль обязательны']
             ]);
             return;
         }

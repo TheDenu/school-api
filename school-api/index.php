@@ -1,5 +1,7 @@
 <?php
+date_default_timezone_set('Europe/Moscow');
 session_start();
+
 require_once 'service/DBConnect.php';
 require_once 'middleware/CorsMiddleware.php';
 require_once 'Router.php';
