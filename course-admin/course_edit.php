@@ -61,7 +61,7 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
         $stmt->bind_param('ssissssi', $name, $description, $hours, $price, $start_date, $end_date, $coverPath, $courseId);
 
         if ($stmt->execute()) {
-            header('Location: adminPanel.php?success=2');
+            header('Location: courses.php?success=2');
             exit;
         } else {
             $errors[] = 'Ошибка БД: ' . $stmt->error;
