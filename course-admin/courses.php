@@ -4,7 +4,6 @@ session_start();
 require_once '../school-api/service/DBConnect.php';
 $mysqli = getDBConnection();
 
-// Проверка авторизации
 if (!isset($_SESSION['admin']) || !$_SESSION['admin']) {
     header('Location: index.php');
     exit;
@@ -37,7 +36,10 @@ $totalPages = ceil($totalCourses / $limit);
         <header class="header">
             <h1>🎓 Управление курсами</h1>
             <p>Создавайте, редактируйте и управляйте образовательными курсами</p>
-            <a href="createCourse.php" class="btn">➕ Создать новый курс</a>
+            <a href="course_add.php" class="btn">➕ Создать новый курс</a>
+            <nav>
+                <a href="lessons.php">Уроки</a><a href=""></a>
+            </nav>
         </header>
 
         <?php if (empty($courses)): ?>
@@ -45,18 +47,15 @@ $totalPages = ceil($totalCourses / $limit);
                 <div style="font-size: 4rem;">📚</div>
                 <h3>Курсов пока нет</h3>
                 <p>Создайте первый курс, чтобы начать управление</p>
-                <a href="createCourse.php" class="btn">Начать</a>
+                <a href="course_add.php" class="btn">Начать</a>
             </div>
         <?php else: ?>
             <div class="courses-list">
                 <?php foreach (array_slice($courses, $offset, $limit) as $course): ?>
                     <div class="course-card">
-                        <!-- ✅ Картинка слева -->
                         <img src="uploads/cover/<?= htmlspecialchars($course['img']) ?>"
                             alt="<?= htmlspecialchars($course['name']) ?>"
                             class="course-thumb">
-
-                        <!-- ✅ Контент справа -->
                         <div class="course-content">
                             <div class="course-header">
                                 <h3 class="course-title"><?= htmlspecialchars($course['name']) ?></h3>
@@ -76,10 +75,10 @@ $totalPages = ceil($totalCourses / $limit);
                                 </div>
 
                                 <div class="course-actions">
-                                    <a href="editCourse.php?id=<?= $course['id'] ?>" class="btn-small btn-edit">
+                                    <a href="course_edit.php?id=<?= $course['id'] ?>" class="btn-small btn-edit">
                                         ✏️ Редактировать
                                     </a>
-                                    <a href="delete_course.php?id=<?= $course['id'] ?>"
+                                    <a href="course_delete.php?id=<?= $course['id'] ?>"
                                         class="btn-small btn-delete"
                                         onclick="return confirm('Удалить курс «<?= htmlspecialchars($course['name']) ?>»?')">
                                         🗑️ Удалить

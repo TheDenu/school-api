@@ -7,15 +7,13 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
 
     $response = makeRequest($email, $password);
 
-    // ✅ Проверяем success И token
     if ($response['success'] && isset($response['token'])) {
         $_SESSION['admin'] = true;
         $_SESSION['token'] = $response['token'];
-        header('Location: adminPanel.php');
+        header('Location: course.php');
         exit;
     } else {
         $error = $response['message'] ?? 'Ошибка авторизации';
-        error_log("Login failed: " . print_r($response, true));
     }
 }
 
@@ -29,7 +27,7 @@ function makeRequest($email, $password)
     ]);
 
     curl_setopt_array($ch, [
-        CURLOPT_URL => 'http://127.0.0.1:8000/school-api/auth',
+        CURLOPT_URL => 'https://module.b/school-api/auth',
         CURLOPT_RETURNTRANSFER => true,
         CURLOPT_POST => true,
         CURLOPT_POSTFIELDS => $jsonData,
@@ -78,17 +76,7 @@ function makeRequest($email, $password)
         <div class="login-header">
             <h2>Админ-панель</h2>
             <p>Войдите для управления курсами</p>
-        </div>
-
-        <?php if (isset($response)): ?>
-            <div style="background: #f8f9fa; padding: 1rem; margin: 1rem 0; font-family: monospace;">
-                <strong>API Debug:</strong><br>
-                Success: <?= $response['success'] ? 'YES' : 'NO' ?><br>
-                Token: <?= isset($response['token']) ? 'YES' : 'NO' ?><br>
-                HTTP: <?= $response['http_code'] ?? 'N/A' ?><br>
-                Message: <?= htmlspecialchars($response['message'] ?? 'N/A') ?>
-            </div>
-        <?php endif; ?>
+        </div>    
 
         <form method="POST" action="index.php">
             <div class="form-group">

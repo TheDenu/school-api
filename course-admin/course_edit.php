@@ -13,7 +13,7 @@ $mysqli = getDBConnection();
 
 $courseId = $_GET['id'] ?? null;
 if (!$courseId || !is_numeric($courseId)) {
-    header('Location: adminPanel.php');
+    header('Location: courses.php');
     exit;
 }
 
@@ -24,7 +24,7 @@ $stmt->execute();
 $result = $stmt->get_result();
 $course = $result->fetch_assoc() ?: [];
 if (!$course) {
-    header('Location: adminPanel.php');
+    header('Location: courses.php');
     exit;
 }
 
@@ -79,126 +79,7 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>✏️ Редактировать курс</title>
-    <style>
-       body {
-            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
-            min-height: 100vh;
-            font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif;
-            display: flex;
-            align-items: center;
-            justify-content: center;
-            padding: 2rem;
-        }
-
-        .form-container {
-            background: rgba(255, 255, 255, 0.95);
-            backdrop-filter: blur(20px);
-            border-radius: 25px;
-            padding: 3rem;
-            width: 100%;
-            max-width: 700px;
-            box-shadow: 0 25px 50px rgba(0, 0, 0, 0.2);
-        }
-
-        .form-title {
-            text-align: center;
-            color: #4a5568;
-            font-size: 2.2rem;
-            font-weight: 700;
-            margin-bottom: 2.5rem;
-        }
-
-        .form-group {
-            margin-bottom: 2rem;
-        }
-
-        .form-label {
-            display: block;
-            font-weight: 600;
-            color: #4a5568;
-            margin-bottom: 0.75rem;
-            font-size: 1rem;
-        }
-
-        .form-control {
-            width: 100%;
-            padding: 1rem 1.25rem;
-            border: 2px solid rgba(0, 0, 0, 0.1);
-            border-radius: 15px;
-            font-size: 1rem;
-            transition: all 0.3s ease;
-            background: white;
-        }
-
-        .form-control:focus {
-            outline: none;
-            border-color: #4dabf7;
-            box-shadow: 0 0 0 4px rgba(77, 171, 247, 0.1);
-        }
-
-        .form-row {
-            display: grid;
-            grid-template-columns: 1fr 1fr;
-            gap: 1.5rem;
-        }
-
-        .form-actions {
-            display: flex;
-            gap: 1.5rem;
-            justify-content: center;
-            margin-top: 2.5rem;
-        }
-
-        .btn {
-            padding: 1rem 2.5rem;
-            border: none;
-            border-radius: 15px;
-            font-weight: 600;
-            font-size: 1.1rem;
-            cursor: pointer;
-            transition: all 0.3s ease;
-            text-decoration: none;
-            display: inline-flex;
-            align-items: center;
-            justify-content: center;
-            min-width: 160px;
-        }
-
-        .btn-primary {
-            background: linear-gradient(135deg, #4dabf7 0%, #3b82f6 100%);
-            color: white;
-        }
-
-        .btn-secondary {
-            background: rgba(0, 0, 0, 0.1);
-            color: #4a5568;
-            border: 2px solid rgba(0, 0, 0, 0.1);
-        }
-
-        .btn:hover {
-            transform: translateY(-3px);
-            box-shadow: 0 15px 35px rgba(0, 0, 0, 0.2);
-        }
-
-        .error {
-            background: rgba(239, 68, 68, 0.15);
-            border: 1px solid #ef4444;
-            color: #dc2626;
-            padding: 1rem;
-            border-radius: 12px;
-            margin-bottom: 2rem;
-        }
-
-        @media (max-width: 768px) {
-            .form-row {
-                grid-template-columns: 1fr;
-            }
-
-            .form-actions {
-                flex-direction: column;
-            }
-        }
-    </style>
+    <link rel="stylesheet" href="./styles/form.css">
 </head>
 
 <body>
@@ -250,7 +131,7 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
             </div>
 
             <div class="form-actions">
-                <a href="adminPanel.php" class="btn btn-secondary">❌ Отмена</a>
+                <a href="courses.php" class="btn btn-secondary">❌ Отмена</a>
                 <button type="submit" class="btn btn-primary">
                     💾 Сохранить изменения
                 </button>
