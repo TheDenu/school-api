@@ -2,31 +2,34 @@
 date_default_timezone_set('Europe/Moscow');
 session_start();
 
-
 if (!isset($_SESSION['admin']) || !$_SESSION['admin']) {
     header('Location: index.php');
     exit;
 }
 
 require_once '../school-api/service/DBConnect.php';
+require_once 'service/coverCreate.php';
 $mysqli = getDBConnection();
 
 $courseId = $_GET['id'] ?? null;
-$isEdit = $courseId !== null;
-$course = [];
-$error = '';
-
-if ($isEdit) {
-    $stmt = $mysqli->prepare("SELECT * FROM courses WHERE id = ?");
-    $stmt->bind_param('i', $courseId);
-    $stmt->execute();
-    $course = $stmt->get_result()->fetch_assoc();
-    $courseImg = $course['img'];
+if (!$courseId || !is_numeric($courseId)) {
+    header('Location: adminPanel.php');
+    exit;
 }
 
+$course = [];
+$stmt = $mysqli->prepare("SELECT * FROM courses WHERE id = ?");
+$stmt->bind_param('i', $courseId);
+$stmt->execute();
+$result = $stmt->get_result();
+$course = $result->fetch_assoc() ?: [];
+if (!$course) {
+    header('Location: adminPanel.php');
+    exit;
+}
 
+$error = '';
 if ($_SERVER['REQUEST_METHOD'] === 'POST') {
-
     $name = trim($_POST['name'] ?? '');
     $description = trim($_POST['description'] ?? '');
     $hours = (int)($_POST['hours'] ?? 0);
@@ -35,20 +38,17 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
     $end_date = $_POST['end_date'] ?? '';
 
     $errors = [];
-
     if (strlen($name) > 30) $errors[] = 'Название не больше 30 символов';
     if (strlen($description) > 100) $errors[] = 'Описание не больше 100 символов';
     if ($hours < 1 || $hours > 10) $errors[] = 'Часы от 1 до 10';
     if ($price < 100) $errors[] = 'Цена минимум 100₽';
 
-    $coverPath = $isEdit ? $course['img'] : null;
-
+    $coverPath = $course['img']; // сохраняем старую
     if (isset($_FILES['img']) && $_FILES['img']['error'] === UPLOAD_ERR_OK) {
         $newCoverPath = processCoverImg($_FILES['img']);
         if ($newCoverPath !== false) {
             $coverPath = $newCoverPath;
-            // Удаляем старую при редактировании
-            if ($isEdit && $course['img'] && file_exists("./uploads/cover/{$course['img']}")) {
+            if ($course['img'] && file_exists("./uploads/cover/{$course['img']}")) {
                 unlink("./uploads/cover/{$course['img']}");
             }
         } else {
@@ -56,109 +56,18 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
         }
     }
 
-    if (!$isEdit && empty($coverPath)) {
-        $errors[] = 'Обложка обязательна при создании';
-    }
-
     if (empty($errors)) {
-        if (!$isEdit) {
-            $stmt = $mysqli->prepare("INSERT INTO courses (name, description,hours, price, start_date, end_date, img) VALUES (?,?,?,?,?,?,?)");
-            $stmt->bind_param('ssidsss', $name, $description, $hours, $price, $start_date, $end_date, $coverPath);
-        } else {
-            $stmt = $mysqli->prepare("UPDATE courses SET name=?, description=?, hours=?, price=?, start_date=?, end_date=?, img=? WHERE id=?");
-            $stmt->bind_param("ssidsssi", $name, $description, $hours, $price, $start_date, $end_date, $coverPath, $courseId);
-        }
+        $stmt = $mysqli->prepare("UPDATE courses SET name=?, description=?, hours=?, price=?, start_date=?, end_date=?, img=? WHERE id=?");
+        $stmt->bind_param('ssissssi', $name, $description, $hours, $price, $start_date, $end_date, $coverPath, $courseId);
 
         if ($stmt->execute()) {
-            header('Location: adminPanel.php?success=1');
+            header('Location: adminPanel.php?success=2');
             exit;
         } else {
-            $errors[] = 'Ошибка БД: ' . $mysqli->error;
+            $errors[] = 'Ошибка БД: ' . $stmt->error;
         }
     }
-
     $error = implode('; ', $errors);
-}
-
-function processCoverImg($file)
-{
-    $maxSize = 2 * 1024 * 1024;
-    $allowedTypes = ['image/jpeg', 'image/jpg'];
-
-    if ($file['size'] > $maxSize) {
-        return false;
-    }
-
-    $finfo = finfo_open(FILEINFO_MIME_TYPE);
-    $mimeType = finfo_file($finfo, $file['tmp_name']);
-
-    if (!in_array($mimeType, $allowedTypes)) {
-        return false;
-    }
-
-    $uploadDir = './uploads/cover';
-    if (!is_dir($uploadDir)) {
-        mkdir($uploadDir, 0755, true);
-    }
-
-    $fileName = 'mpic_' . time() . '_' . microtime() . '.jpg';
-    $filePath = $uploadDir . '/' . $fileName;
-
-    if (createThumbnail($file['tmp_name'], $filePath, 300, 300)) {
-        return $fileName;
-    }
-}
-
-function createThumbnail($sourcePath, $destPath, $maxWidth, $maxHeight)
-{
-    // Загружаем изображение
-    $imageInfo = getimagesize($sourcePath);
-    if (!$imageInfo) return false;
-
-    $sourceWidth = $imageInfo[0];
-    $sourceHeight = $imageInfo[1];
-
-    // Вычисляем пропорции (как CSS object-fit: cover)
-    $widthRatio = $maxWidth / $sourceWidth;
-    $heightRatio = $maxHeight / $sourceHeight;
-    $ratio = max($widthRatio, $heightRatio);
-
-    // Центрируем обрезку
-    $srcX = ($sourceWidth - $maxWidth / $ratio) / 2;
-    $srcY = ($sourceHeight - $maxHeight / $ratio) / 2;
-
-    // Создаем миниатюру
-    $thumb = imagecreatetruecolor($maxWidth, $maxHeight);
-
-    switch ($imageInfo['mime']) {
-        case 'image/jpeg':
-            $source = imagecreatefromjpeg($sourcePath);
-            break;
-        default:
-            return false;
-    }
-
-    // Заполняем белым фоном
-    $white = imagecolorallocate($thumb, 255, 255, 255);
-    imagefill($thumb, 0, 0, $white);
-
-    // Копируем с обрезкой и масштабированием
-    imagecopyresampled(
-        $thumb,
-        $source,
-        0,
-        0,
-        $srcX,
-        $srcY,
-        $maxWidth,
-        $maxHeight,
-        $maxWidth / $ratio,
-        $maxHeight / $ratio
-    );
-
-    $result = imagejpeg($thumb, $destPath, 90);
-
-    return $result;
 }
 
 ?>
@@ -169,10 +78,9 @@ function createThumbnail($sourcePath, $destPath, $maxWidth, $maxHeight)
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title><?= $isEdit ? 'Редактировать курс' : 'Новый курс' ?></title>
+    <title>✏️ Редактировать курс</title>
     <style>
-        /* Тот же CSS что в adminPanel.php */
-        body {
+       body {
             background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
             min-height: 100vh;
             font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif;
@@ -295,15 +203,10 @@ function createThumbnail($sourcePath, $destPath, $maxWidth, $maxHeight)
 
 <body>
     <div class="form-container">
-        <h1 class="form-title">
-            <?= $isEdit ? '✏️ Редактировать курс' : '➕ Новый курс' ?>
-        </h1>
+        <h1 class="form-title">✏️ Редактировать курс</h1>
+        <?php if ($error): ?><div class="error"><?= htmlspecialchars($error) ?></div><?php endif; ?>
 
-        <?php if ($error): ?>
-            <div class="error"><?= htmlspecialchars($error) ?></div>
-        <?php endif; ?>
-
-        <form method="POST" enctype="multipart/form-data" action="courseForm.php?id=<?= $courseId ?>">
+        <form method="POST" enctype="multipart/form-data">
             <div class="form-group">
                 <label class="form-label">Название курса <span style="color: #ef4444;">*</span></label>
                 <input type="text" class="form-control" name="name" maxlength="30" value="<?= $course['name'] ?? '' ?>" required>
@@ -339,7 +242,7 @@ function createThumbnail($sourcePath, $destPath, $maxWidth, $maxHeight)
             </div>
 
             <div class="form-group">
-                <label class="form-label">Обложка (JPG, макс. 2МБ) <?= $isEdit ? '' : '<span style="color: #ef4444;">*</span>' ?></label>
+                <label class="form-label">Обложка (JPG, макс. 2МБ)</label>
                 <input type="file" class="form-control" name="img" accept="image/jpeg,image/jpg">
                 <small style="color: #6b7280;">
                     Автоматически создастся миниатюра <code>mpic*.jpg</code> (300×300)
@@ -349,7 +252,7 @@ function createThumbnail($sourcePath, $destPath, $maxWidth, $maxHeight)
             <div class="form-actions">
                 <a href="adminPanel.php" class="btn btn-secondary">❌ Отмена</a>
                 <button type="submit" class="btn btn-primary">
-                    💾 <?= $isEdit ? 'Сохранить изменения' : 'Создать курс' ?>
+                    💾 Сохранить изменения
                 </button>
             </div>
         </form>
