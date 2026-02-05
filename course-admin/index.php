@@ -2,21 +2,24 @@
 session_start();
 
 if ($_SERVER['REQUEST_METHOD'] === 'POST') {
-    $email = trim($_POST['email'] ?? '');
-    $password = $_POST['password'] ?? '';
+    $email = trim($_POST['email']);
+    $password = $_POST['password'];
 
-    $response = makeRequest($email, $password);
+    if (empty($email)) $errors['email'] = 'input email';
+    if (empty($password)) $errors['password'] = 'input password';
 
-    if ($response['success'] && isset($response['token'])) {
+    //$response = makeRequest($email, $password);
+
+    if ($email === 'admin@edu.com' && $password === 'course2025') {
         $_SESSION['admin'] = true;
-        $_SESSION['token'] = $response['token'];
         header('Location: courses.php');
         exit;
     } else {
-        $error = $response['message'] ?? 'Ошибка авторизации';
+        $errors['error'] = 'Неверный логин или пароль';
+        //$error = $response['message'] ?? 'Ошибка авторизации';
     }
 }
-
+/*
 function makeRequest($email, $password)
 {
     $ch = curl_init();
@@ -58,7 +61,7 @@ function makeRequest($email, $password)
         'has_token' => isset($data['token']),
         'response' => $response
     ];
-}
+}*/
 ?>
 
 <!DOCTYPE html>
@@ -76,14 +79,18 @@ function makeRequest($email, $password)
         <div class="login-header">
             <h2>Админ-панель</h2>
             <p>Войдите для управления курсами</p>
-        </div>    
+        </div>
 
         <form method="POST" action="index.php">
+            <small style="color: #e70d0d;"><?= $errors['error'] ?? ''  ?></small>
+
             <div class="form-group">
                 <label class="form-label">Email</label>
                 <div class="input-group">
                     <span class="input-group-text">📧</span>
                     <input type="email" class="form-control" name="email" placeholder="admin@example.com" value="<?= htmlspecialchars($email ?? '') ?>">
+                    <small style="color: #e70d0d;"><?= $errors['email'] ?? ''  ?></small>
+
                 </div>
                 <div class="error-message" id="email-error"></div>
             </div>
@@ -93,6 +100,8 @@ function makeRequest($email, $password)
                 <div class="input-group">
                     <span class="input-group-text">🔒</span>
                     <input type="password" class="form-control" name="password" placeholder="••••••••">
+                    <small style="color: #e70d0d;"><?= $errors['password'] ?? ''  ?></small>
+
                 </div>
                 <div class="error-message" id="password-error"></div>
             </div>
