@@ -11,28 +11,35 @@ require_once '../school-api/service/DBConnect.php';
 require_once 'service/coverCreate.php';
 
 $mysqli = getDBConnection();
-$error = '';
+$errors = [];
+
 
 if ($_SERVER['REQUEST_METHOD'] === 'POST') {
-    $name = trim($_POST['name'] ?? '');
-    $description = trim($_POST['description'] ?? '');
+    $name = trim($_POST['name']);
+    $description = trim($_POST['description']);
     $hours = (int)($_POST['hours'] ?? 0);
     $price = (float)($_POST['price'] ?? 0);
-    $start_date = $_POST['start_date'] ?? '';
-    $end_date = $_POST['end_date'] ?? '';
+    $start_date = $_POST['start_date'];
+    $end_date = $_POST['end_date'];
 
-    $errors = [];
-    if (strlen($name) > 30) $errors[] = 'Название не больше 30 символов';
-    if (strlen($description) > 100) $errors[] = 'Описание не больше 100 символов';
-    if ($hours < 1 || $hours > 10) $errors[] = 'Часы от 1 до 10';
-    if ($price < 100) $errors[] = 'Цена минимум 100₽';
+    if (empty($name)) $errors['name'] = 'Заполните название';
+    if (empty($description)) $errors['description'] = 'Заполните описание';
+    if (empty($start_date)) $errors['start_date'] = 'Заполните дату начала';
+    if (empty($end_date)) $errors['end_date'] = 'Заполните дату окончания';
+    if ($hours < 1 || $hours > 10) $errors['hours'] = 'Часы от 1 до 10';
+    if ($price < 100) $errors['price'] = 'Цена минимум 100₽';
+    if (strlen($name) > 30) $errors['name'] = 'Название не больше 30 символов';
+    if (strlen($description) > 100) $errors['description'] = 'Описание не больше 100 символов';
+    if (date('Y-m-d') > $start_date) $errors['start_date'] = 'Дата начала курса должна быть не позже ' . date('d-m-Y');
+    if (date('Y-m-d') > $end_date) $errors['end_date'] = 'Дата конца курса должна быть не позже ' . date('d-m-Y');
+    if ($start_date > $end_date) $errors['end_date'] = 'Дата конца курса не может быть раньше даты начала';
 
     $coverPath = null;
     if (isset($_FILES['img']) && $_FILES['img']['error'] === UPLOAD_ERR_OK) {
         $coverPath = processCoverImg($_FILES['img']);
-        if ($coverPath === false) $errors[] = 'Ошибка обработки изображения';
+        if ($coverPath === false) $errors['img'] = 'Ошибка обработки изображения';
     } else {
-        $errors[] = 'Обложка обязательна';
+        $errors['img'] = 'Обложка обязательна';
     }
 
     if (empty($errors)) {
@@ -43,10 +50,9 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
             header('Location: courses.php?msg=success');
             exit;
         } else {
-            $errors[] = 'Ошибка БД: ' . $stmt->error;
+            $errors['error'] = 'Ошибка БД: ' . $stmt->error;
         }
     }
-    $error = implode('; ', $errors);
 }
 ?>
 
@@ -63,47 +69,49 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
 <body>
     <div class="form-container">
         <h1 class="form-title">➕ Новый курс</h1>
-        <?php if ($error): ?><div class="error"><?= htmlspecialchars($error) ?></div><?php endif; ?>
-
         <form method="POST" enctype="multipart/form-data">
             <div class="form-group">
                 <label class="form-label">Название курса <span style="color: #ef4444;">*</span></label>
-                <input type="text" class="form-control" name="name" maxlength="30" required>
-                <small style="color: #6b7280;">Максимум 30 символов</small>
+                <input type="text" class="form-control" name="name">
+                <small style="color: #e70d0d;"><?= $errors['name'] ?? ''  ?></small>
             </div>
 
             <div class="form-group">
                 <label class="form-label">Описание курса</label>
-                <textarea class="form-control" name="description" rows="4" maxlength="100"></textarea>
-                <small style="color: #6b7280;">Максимум 100 символов</small>
+                <textarea class="form-control" name="description" rows="4"></textarea>
+                <small style="color: #e70d0d;"><?= $errors['description'] ?? ''  ?></small>
             </div>
 
             <div class="form-row">
                 <div class="form-group">
                     <label class="form-label">Часы <span style="color: #ef4444;">*</span></label>
-                    <input type="number" class="form-control" name="hours" min="1" max="10" required>
+                    <input type="number" class="form-control" name="hours">
+                    <small style="color: #e70d0d;"><?= $errors['hours'] ?? ''  ?></small>
                 </div>
                 <div class="form-group">
                     <label class="form-label">Цена (₽) <span style="color: #ef4444;">*</span></label>
-                    <input type="number" class="form-control" name="price" step="0.01" min="100" required>
+                    <input type="number" class="form-control" name="price" step="0.01">
+                    <small style="color: #e70d0d;"><?= $errors['price'] ?? ''  ?></small>
                 </div>
             </div>
 
             <div class="form-row">
                 <div class="form-group">
                     <label class="form-label">Дата начала <span style="color: #ef4444;">*</span></label>
-                    <input type="date" class="form-control" name="start_date" min="<?= date('Y-m-d') ?>" required>
+                    <input type="date" class="form-control" name="start_date">
+                    <small style="color: #e70d0d;"><?= $errors['start_date'] ?? ''  ?></small>
                 </div>
                 <div class="form-group">
                     <label class="form-label">Дата окончания <span style="color: #ef4444;">*</span></label>
-                    <input type="date" class="form-control" name="end_date" min="<?= date('Y-m-d') ?>" required>
+                    <input type="date" class="form-control" name="end_date">
+                    <small style="color: #e70d0d;"><?= $errors['end_date'] ?? ''  ?></small>
                 </div>
             </div>
 
             <div class="form-group">
                 <label class="form-label">Обложка (JPG, макс. 2МБ) <span style="color: #ef4444;">*</span></label>
-                <input type="file" class="form-control" name="img" accept="image/jpeg,image/jpg" required>
-                <small style="color: #6b7280;">Автоматически создастся миниатюра 300×300</small>
+                <input type="file" class="form-control" name="img" accept="image/jpeg,image/jpg">
+                <small style="color: #e70d0d;"><?= $errors['img'] ?? '' ?></small>
             </div>
 
             <div class="form-actions">

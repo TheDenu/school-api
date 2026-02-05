@@ -10,7 +10,7 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
     if ($response['success'] && isset($response['token'])) {
         $_SESSION['admin'] = true;
         $_SESSION['token'] = $response['token'];
-        header('Location: course.php');
+        header('Location: courses.php');
         exit;
     } else {
         $error = $response['message'] ?? 'Ошибка авторизации';
