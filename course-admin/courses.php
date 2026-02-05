@@ -29,6 +29,8 @@ $totalPages = ceil($totalCourses / $limit);
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Админ-панель - Курсы</title>
     <link rel="stylesheet" href="./styles/main.css">
+    <link rel="stylesheet" href="css/style.css">
+
 </head>
 
 <body>

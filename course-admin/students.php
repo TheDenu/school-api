@@ -11,7 +11,7 @@ if (!isset($_SESSION['admin']) || !$_SESSION['admin']) {
 }
 
 $stmt = $mysqli->prepare("
-    SELECT users.name, users.email, courses.name as title, orders.date_order, statuses_payment.status_payment
+    SELECT users.name, users.email, users.id_user, courses.name as title, courses.id, orders.date_order, statuses_payment.status_payment
     FROM orders 
     JOIN users using(id_user) 
     JOIN courses ON orders.id_course = courses.id 
@@ -63,7 +63,9 @@ $orders = $stmt->get_result()->fetch_all(MYSQLI_ASSOC);
                     <p><?= $order['title'] ?></p>
                     <p><?= $order['date_order'] ?></p>
                     <p class="student__paid-info"><?= $order['status_payment'] ?></p>
-                    <form class="student-item__right">
+                    <form class="student-item__right" method="POST" action="certificate.php">
+                        <input type="text" name="id_course" value="<?= $order['id'] ?>" hidden>
+                        <input type="text" name="id_user" value="<?= $order['id_user'] ?>" hidden>
                         <input type="submit" value="Print the certificate" class="student-item__btn">
                     </form>
                 </div>
