@@ -1,0 +1,565 @@
+*{
+    margin: 0;
+    padding: 0;
+}
+
+@font-face {
+    font-family: YanBold;
+    src: url(../fonts/Yanone_Kaffeesatz/YanoneKaffeesatz-Bold.ttf);
+}
+
+@font-face {
+    font-family: ZenBold;
+    src: url(../fonts/Zen_Kaku_Gothic_Antique/ZenKakuGothicAntique-Bold.ttf);
+}
+
+@font-face {
+    font-family: ZenReg;
+    src: url(../fonts/Zen_Kaku_Gothic_Antique/ZenKakuGothicAntique-Regular.ttf);
+}
+
+.container{
+    width: 100vw;
+    margin: 0 auto;
+    height: 100vh;
+    display: flex;
+}
+
+.main{
+    width: 62%;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+}
+
+.first-line{
+    width: 22%;
+    height: 100vh;
+    background-color: #FFF3B0;
+}
+
+
+.second-line{
+    width: 11%;
+    height: 100vh;
+    background-color: #9E2A2B;
+}
+
+.third-line{
+    width: 5%;
+    height: 100vh;
+    background-color: #335C67;
+}
+
+.first-line__img,
+.second-line__img,
+.third-line__img{
+    width: 100%;
+}
+
+.first-line__img{
+    margin-top: 35%;
+}
+
+.second-line__img{
+    margin-top: 149%;
+}
+
+.third-line__img{
+    margin-top: 564%;
+}
+
+.main-form{
+    width: 40%;
+    height: 60%;
+    border: 1px solid #335C67;
+    box-shadow: 4px 4px 10px rgba(51, 92, 103, 0.46);
+    border-radius: 4px;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+
+}
+
+.main-h1{
+    font-family: YanBold;
+    font-size: 48px;
+    margin: 10% 0 5% 0;
+
+}
+
+.main-form__p{
+    font-family: ZenBold;
+    font-size: 36px;
+    margin-top: 5%;
+    margin-bottom: 10%;
+}
+
+.main-form__txt{
+    width: 70%;
+    height: 30px;
+    border: none;
+    border-bottom: 1px solid #335C67;
+    padding-left: 10px;
+    outline: none;
+    box-sizing: border-box;
+    font-family: ZenReg;
+    font-size: 24px;
+    padding-bottom: 5px;
+}
+
+.main-form__txt::placeholder{
+    font-family: ZenReg;
+    font-size: 24px;
+    color: #540B0E;
+}
+
+.main-form-second{
+    margin-top: 30px;
+    margin-bottom: 45px;
+}
+
+.main-form__btn{
+    width: 159px;
+    height: 50px;
+
+    background: #540B0E;
+    border-radius: 4px;
+    font-family: ZenBold;
+    border: none;
+    font-size: 18px;
+    color: #FFF3B0;
+}
+
+/* стилизация страницы курсов */
+
+.container-courses{
+    width: 80%;
+    margin: 0 auto;
+}
+
+.header{
+    display: flex;
+    flex-direction: column;
+    align-items: flex-end;
+}
+.header-top{
+    display: flex;
+    justify-content: space-between;
+    margin-top: 5%;
+    width: 60%;
+}
+
+.header-top__name{
+    font-family: YanBold;
+    font-size: 48px;
+}
+
+
+.header-top__logout{
+    font-family: ZenReg;
+    font-size: 24px;
+}
+
+.header-bottom{
+    /* background-color: #FFF3B0; */
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    width: 100%;
+    align-items: center;
+    margin-top: 20px;
+    /* height: 70px; */
+    border-top: 2px solid #335C67;
+    padding-top: 40px;
+}
+
+
+.header-bottom__nav-a{
+    text-decoration: none;
+    font-family: ZenReg;
+    font-size: 24px;
+    margin-right: 20px;
+    color: #000000;
+}
+
+.header-bottom__nav-a:focus,
+.header-bottom__nav-a:active{
+    border-bottom: #000000 1px solid;
+    padding-bottom: 2px;
+}
+
+.header-bottom__btn{
+    width: 200px;
+    height: 59px;
+    background: #335C67;
+    border-radius: 4px;
+    font-size: 24px;
+    font-family: ZenBold;
+    color: #FFF3B0;
+    border: none;
+}
+
+.main-courses,
+.main-student{
+    margin-top: 30px;
+}
+
+.course-item,
+.lesson-item{
+    width: 100%;
+    height: 500px;
+    border: 1px solid #335C67;
+    box-shadow: 4px 4px 10px rgba(51, 92, 103, 0.46);
+    border-radius: 4px;
+    display: flex;
+    padding-top: 38px;
+    box-sizing: border-box;
+    /* padding-right: 35px; */
+    margin-bottom: 70px;
+}
+.course-item__left{
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    width: 46%;
+}
+
+.course-item__p,
+.lesson-item__p{
+    font-family: YanBold;
+    font-size: 36px;
+    margin-bottom: 15px;
+    /* margin-top: 38px; */
+    color: #9E2A2B;
+}
+
+.lesson-item__p::placeholder{
+    font-size: 14px;
+}
+
+.course-item__cover{
+    background-color: #335C67;
+    width: 150%;
+    margin-left: -7%;
+    margin-right: -7%;
+    display: flex;
+    justify-content: center;
+}
+
+.course-item__cover-yellow{
+    background-color: #FFF3B0;
+    width: 400px;
+    height: 353px;
+    display: flex;
+    align-items: center;
+}
+
+.course-item__img,
+.lesson-item__img{
+    width: 300px;
+    height: 300px;
+    object-fit: cover;
+}
+
+.course-item__right{
+    width: 54%;
+    padding-right: 45px;
+    padding-left: 30px;
+    box-sizing: border-box;
+}
+
+.long-dates,
+.lesson-name-txt{
+    display: flex;
+    align-items: center;
+    /* background-color: #FFF3B0; */
+    width: 100%;
+    justify-content: flex-end;
+    height: 53px;
+    margin-bottom: 10px;
+}
+
+.long-dates__period,
+.lesson-name{
+    font-family: ZenReg;
+    color: #9E2A2B;
+    font-size: 18px;
+}
+
+.long-dates__img{
+    width: 53px;
+    margin-left: 15px;
+    /* height: 53px; */
+}
+
+.course-item__description,
+.lesson-item__description{
+    font-size: 18px;
+    font-family: ZenReg;
+    width: 500px;
+    height: 260px;
+}
+
+.course-item__footer{
+    display: flex;
+    /* background-color: #FFF3B0; */
+    justify-content: space-between;
+    margin-top: 30px;
+}
+
+.course__info,
+.lesson__info{
+    display: flex;
+    align-items: center;
+    font-size: 18px;
+    font-family: ZenReg;
+}
+
+.course-icon,
+.lesson-icon{
+    width: 37px;
+    margin-right: 6px;
+}
+
+.course__manage,
+.lesson__manage{
+    width: 130px;
+    display: flex;
+    justify-content: space-around;
+    align-items: center;
+    border: 2px #9E2A2B solid;
+    height: 45px;
+    border-radius: 4px;
+}
+
+.course__manage-icon,
+.lesson__manage-icon{
+    width: 30px;
+    height: 30px;
+}
+
+.course__info-txt{
+    /* font-size: 18px;
+    font-family: ZenReg; */
+}
+
+.courses-page{
+    width: 20%;
+    height: 70px;
+    display: flex;
+    font-family: YanBold;
+    justify-content: space-between;
+    align-items: center;
+    font-size: 48px;
+    color: #335C67;
+    margin: 0 auto 30px auto;
+}
+
+.courses-page__active{
+    background-color: #335C67;
+    height: 70px;
+    color: #FFF3B0;
+    width: 60px;
+    text-align: center;
+    line-height: 150%;
+    text-decoration: none;
+}
+
+.courses-page__reg{
+    text-decoration: none;
+}
+
+/* редактирование информации о курсе */
+
+.course__info_edit{
+    width: 70px;
+}
+
+.long-dates_edit{
+    display: flex;
+}
+
+.course__manage_edit{
+    border: none;
+}
+
+.course-btn__save,
+.lesson-btn__save{
+    width: 160px;
+    height: 50px;
+    background-color: #9E2A2B;
+    border: none;
+    color: #FFF3B0;
+    font-family: ZenReg;
+    border-radius: 4px;
+    font-size: 24px;
+    /* margin-right: 20px; */
+}
+
+.course-btn__cancel,
+.lesson-btn__cancel{
+    width: 160px;
+    height: 50px;
+    border: none;
+    color: #540B0E;
+    font-family: ZenReg;
+    font-size: 24px;
+    background: none;
+    border: 1px solid #540B0E;
+    border-radius: 4px;
+}
+
+.course-btns,
+.lesson-btns{
+    margin: 0 auto 30px auto;
+    width: 350px;
+    display: flex;
+    justify-content: space-between;
+    /* background-color: aquamarine; */
+}
+
+/* стилизация страницы уроков */
+/* нет стилей, взяты из курсов */
+
+/* стилизация добавления курса */
+.course-btn__add{
+        width: 160px;
+    height: 50px;
+    background-color: #9E2A2B;
+    border: none;
+    color: #FFF3B0;
+    font-family: ZenReg;
+    border-radius: 4px;
+    font-size: 24px;
+    margin: 0 auto 30px auto;
+}
+
+.course-btns-add{
+    margin: 0 auto 30px auto;
+    width: 350px;
+    display: flex;
+    justify-content: center;
+}
+
+/* редактирование урока */
+
+.lesson__manage-edit{
+    border: none;
+}
+
+.lesson-name-edit{
+    width: 400px;
+}
+
+/* страница студентов */
+
+.student-item__header{
+    width: 100%;
+}
+.student-item{
+    width: 100%;
+    height: 60px;
+    border: 1px solid #335C67;
+    /* box-shadow: 4px 4px 10px rgba(51, 92, 103, 0.46); */
+    /* border-radius: 4px; */
+    display: flex;
+    padding-top: 38px;
+    box-sizing: border-box;
+    /* margin-bottom: 15px; */
+}
+
+/* Шапка таблицы */
+.student-item__header {
+    display: grid;
+    grid-template-columns: 20% 20% 15% 15% 15% 15%;
+    gap: 0;
+    background-color: #335C67;
+    color: #FFF3B0;
+    font-family: ZenBold;
+    padding: 0;
+}
+
+.student-info {
+    padding: 16px 12px;
+    margin: 0;
+    /* font-weight: 600; */
+    font-size: 14px;
+    text-align: left;
+    border-right: 1px solid rgba(255, 255, 255, 0.1);
+}
+
+.student-info:last-child {
+    border-right: none;
+}
+
+/* Строка с данными студента */
+.student-item {
+    display: grid;
+    grid-template-columns: 20% 20% 15% 15% 15% 15%;
+    gap: 0;
+    padding: 0;
+    border-top: 1px solid #FFF3B0;
+    font-family: ZenReg;
+    transition: background-color 0.2s ease;
+}
+
+.student-item:hover {
+    background-color: #FFF3B0;
+}
+
+.student-item > p {
+    padding: 16px 12px;
+    margin: 0;
+    border-right: 1px solid #335C67;
+    font-size: 14px;
+    color: #335C67;
+    display: flex;
+    align-items: center;
+    min-height: 52px;
+    box-sizing: border-box;
+}
+
+.student-item > p:last-child {
+    border-right: none;
+}
+
+
+.student__paid-info {
+    color: #335C67;
+    font-family: ZenBold;
+    /* font-weight: 600; */
+}
+
+/* Правая часть с кнопкой */
+.student-item__right {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    padding: 8px 12px;
+    margin: 0;
+    /* border-right: 1px solid #e0e0e0; */
+}
+
+.student-item__btn {
+    background-color: #9E2A2B;
+    color: #FFF3B0;
+    border: none;
+    padding: 10px 16px;
+    border-radius: 4px;
+    cursor: pointer;
+    font-size: 13px;
+    font-weight: 500;
+    transition: background-color 0.2s ease;
+    white-space: nowrap;
+    width: 100%;
+    max-width: 200px;
+}
+
+.student-item__btn:hover {
+    background-color: #540B0E;
+}
+
+.student-item__btn:active {
+    background-color: #540B0E;
+}

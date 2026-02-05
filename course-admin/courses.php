@@ -38,7 +38,7 @@ $totalPages = ceil($totalCourses / $limit);
             <p>Создавайте, редактируйте и управляйте образовательными курсами</p>
             <a href="course_add.php" class="btn">➕ Создать новый курс</a>
             <nav>
-                <a href="lessons.php">Уроки</a><a href=""></a>
+                <a href="lessons.php">Уроки </a><a href="students.php">Студенты</a>
             </nav>
         </header>
 

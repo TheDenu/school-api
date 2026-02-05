@@ -9,7 +9,10 @@ if (!isset($_SESSION['admin']) || !$_SESSION['admin']) {
 
 require_once '../school-api/service/DBConnect.php';
 require_once 'service/coverCreate.php';
+require_once 'service/validateCourse.php';
+
 $mysqli = getDBConnection();
+$errors = [];
 
 $courseId = $_GET['id'] ?? null;
 if (!$courseId || !is_numeric($courseId)) {
@@ -28,7 +31,6 @@ if (!$course) {
     exit;
 }
 
-$error = '';
 if ($_SERVER['REQUEST_METHOD'] === 'POST') {
     $name = trim($_POST['name'] ?? '');
     $description = trim($_POST['description'] ?? '');
@@ -37,11 +39,7 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
     $start_date = $_POST['start_date'] ?? '';
     $end_date = $_POST['end_date'] ?? '';
 
-    $errors = [];
-    if (strlen($name) > 30) $errors[] = 'Название не больше 30 символов';
-    if (strlen($description) > 100) $errors[] = 'Описание не больше 100 символов';
-    if ($hours < 1 || $hours > 10) $errors[] = 'Часы от 1 до 10';
-    if ($price < 100) $errors[] = 'Цена минимум 100₽';
+    $errors = validate($name, $description, $hours, $price, $start_date, $end_date);
 
     $coverPath = $course['img']; // сохраняем старую
     if (isset($_FILES['img']) && $_FILES['img']['error'] === UPLOAD_ERR_OK) {
@@ -67,7 +65,6 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
             $errors[] = 'Ошибка БД: ' . $stmt->error;
         }
     }
-    $error = implode('; ', $errors);
 }
 
 ?>
@@ -85,49 +82,50 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
 <body>
     <div class="form-container">
         <h1 class="form-title">✏️ Редактировать курс</h1>
-        <?php if ($error): ?><div class="error"><?= htmlspecialchars($error) ?></div><?php endif; ?>
 
         <form method="POST" enctype="multipart/form-data">
             <div class="form-group">
                 <label class="form-label">Название курса <span style="color: #ef4444;">*</span></label>
-                <input type="text" class="form-control" name="name" maxlength="30" value="<?= $course['name'] ?? '' ?>" required>
-                <small style="color: #6b7280;">Максимум 30 символов</small>
+                <input type="text" class="form-control" name="name" value="<?= $course['name'] ?? '' ?>">
+                <small style="color: #e70d0d;"><?= $errors['name'] ?? ''  ?></small>
             </div>
 
             <div class="form-group">
                 <label class="form-label">Описание курса</label>
                 <textarea class="form-control" name="description" rows="4" maxlength="100"><?= $course['description'] ?? '' ?></textarea>
-                <small style="color: #6b7280;">Максимум 100 символов</small>
+                <small style="color: #e70d0d;"><?= $errors['description'] ?? ''  ?></small>
             </div>
 
             <div class="form-row">
                 <div class="form-group">
                     <label class="form-label">Продолжительность (часы) <span style="color: #ef4444;">*</span></label>
-                    <input type="number" class="form-control" name="hours" min="1" max="10" value="<?= $course['hours'] ?? '' ?>" required>
+                    <input type="number" class="form-control" name="hours" value="<?= $course['hours'] ?? '' ?>">
+                    <small style="color: #e70d0d;"><?= $errors['hours'] ?? ''  ?></small>
                 </div>
                 <div class="form-group">
                     <label class="form-label">Цена (₽) <span style="color: #ef4444;">*</span></label>
-                    <input type="number" class="form-control" name="price" step="0.01" min="100" value="<?= $course['price'] ?? '' ?>" required>
+                    <input type="number" class="form-control" name="price" step="0.01" value="<?= $course['price'] ?? '' ?>">
+                    <small style="color: #e70d0d;"><?= $errors['price'] ?? ''  ?></small>
                 </div>
             </div>
 
             <div class="form-row">
                 <div class="form-group">
                     <label class="form-label">Дата начала <span style="color: #ef4444;">*</span></label>
-                    <input type="date" class="form-control" name="start_date" min="<?= date('Y-m-d') ?>" value="<?= $course['start_date'] ?? '' ?>" required>
+                    <input type="date" class="form-control" name="start_date" value="<?= $course['start_date'] ?? '' ?>">
+                    <small style="color: #e70d0d;"><?= $errors['start_date'] ?? ''  ?></small>
                 </div>
                 <div class="form-group">
                     <label class="form-label">Дата окончания <span style="color: #ef4444;">*</span></label>
-                    <input type="date" class="form-control" name="end_date" min="<?= date('Y-m-d') ?>" value="<?= $course['end_date'] ?? '' ?>" required>
+                    <input type="date" class="form-control" name="end_date" value="<?= $course['end_date'] ?? '' ?>">
+                    <small style="color: #e70d0d;"><?= $errors['end_date'] ?? ''  ?></small>
                 </div>
             </div>
 
             <div class="form-group">
                 <label class="form-label">Обложка (JPG, макс. 2МБ)</label>
                 <input type="file" class="form-control" name="img" accept="image/jpeg,image/jpg">
-                <small style="color: #6b7280;">
-                    Автоматически создастся миниатюра <code>mpic*.jpg</code> (300×300)
-                </small>
+                <small style="color: #e70d0d;"><?= $errors['img'] ?? ''  ?></small>
             </div>
 
             <div class="form-actions">

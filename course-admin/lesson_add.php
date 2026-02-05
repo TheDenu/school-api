@@ -1,8 +1,9 @@
 <?php
 session_start();
 require_once '../school-api/service/DBConnect.php';
+require_once 'service/validateLesson.php';
 $mysqli = getDBConnection();
-$error = '';
+$errors = [];
 
 $stmt = $mysqli->prepare("SELECT name, id FROM courses");
 $stmt->execute();
@@ -15,17 +16,15 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
     $hours = (int)($_POST['hours'] ?? 0);
     $video_link = trim($_POST['video_link'] ?? '');
 
-    $errors = [];
-    if (strlen($name) > 50) $errors[] = 'Название не больше 50 символов';
-    if ($hours < 1 || $hours > 4) $errors[] = 'Часы от 1 до 4';
+    $errors = validate($name, $description, $hours, $video_link);
 
     $stmt = $mysqli->prepare("SELECT id FROM lessons WHERE id_course = ?");
     $stmt->bind_param('i', $id_course);
     $stmt->execute();
     $count = $stmt->get_result()->num_rows;
 
-    if($count >= 5){
-        $errors[] = 'Курс не нуждается в добавлении уроков';
+    if ($count >= 5) {
+        $errors['error'] = 'Курс не нуждается в добавлении уроков';
     }
 
     if (empty($errors)) {
@@ -36,10 +35,9 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
             header('Location: lessons.php?msg=success');
             exit;
         } else {
-            $errors[] = 'Ошибка БД:' . $stmt->error;
+            $errors['error'] = 'Ошибка БД:' . $stmt->error;
         }
     }
-    $error = implode('; ', $errors);
 }
 
 ?>
@@ -57,7 +55,7 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
 <body>
     <div class="form-container">
         <h1 class="form-title">➕ Новый урок</h1>
-        <?php if ($error): ?><div class="error"><?= htmlspecialchars($error) ?></div><?php endif; ?>
+        <?php if (isset($errors['error'])): ?><div class="error"><?= $errors['error'] ?></div><?php endif; ?>
 
         <form method="POST" enctype="multipart/form-data">
             <div class="form-group">
@@ -72,23 +70,28 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
             </div>
             <div class="form-group">
                 <label class="form-label">Название урока <span style="color: #ef4444;">*</span></label>
-                <input type="text" class="form-control" name="name" maxlength="50" required>
-                <small style="color: #6b7280;">Максимум 50 символов</small>
+                <input type="text" class="form-control" name="name">
+                <small style="color: #e70d0d;"><?= $errors['name'] ?? '' ?></small>
             </div>
 
             <div class="form-group">
                 <label class="form-label">Описание урока <span style="color: #ef4444;">*</span></label>
-                <textarea class="form-control" name="description" rows="4" required></textarea>
+                <textarea class="form-control" name="description" rows="4"></textarea>
+                <small style="color: #e70d0d;"><?= $errors['description'] ?? '' ?></small>
             </div>
 
             <div class="form-row">
                 <div class="form-group">
                     <label class="form-label">Часы <span style="color: #ef4444;">*</span></label>
-                    <input type="number" class="form-control" name="hours" min="1" max="4" required>
+                    <input type="number" class="form-control" name="hours">
+                    <small style="color: #e70d0d;"><?= $errors['hours'] ?? '' ?></small>
+
                 </div>
                 <div class="form-group">
                     <label class="form-label">Ссылка на урок</label>
                     <input type="text" class="form-control" name="video_link">
+                    <small style="color: #e70d0d;"><?= $errors['video_link'] ?? '' ?></small>
+
                 </div>
             </div>
 
