@@ -24,12 +24,7 @@ function makeRequest($jsonData)
         CURLOPT_URL => 'https://certificate.local/create-sertificate/',
         CURLOPT_RETURNTRANSFER => true,
         CURLOPT_POST => true,
-        CURLOPT_POSTFIELDS => $jsonData,
-        CURLOPT_HTTPHEADER => [
-            'Accept: application/json',
-            'Content-Type: application/json'
-        ],
-        CURLOPT_TIMEOUT => 30
+        CURLOPT_POSTFIELDS => $jsonData
     ]);
 
     $response = curl_exec($ch);
