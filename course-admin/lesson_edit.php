@@ -26,8 +26,8 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
     $errors = validate($name, $description, $hours, $video_link);
 
     if (empty($errors)) {
-        $stmt = $mysqli->prepare("INSERT INTO lessons (id_course, name, description, hours, video_link) VALUES (?,?,?,?,?)");
-        $stmt->bind_param('issis', $id_course, $name, $description, $hours, $video_link);
+        $stmt = $mysqli->prepare("UPDATE lessons SET name=?, description=?, hours=?, video_link=? WHERE id=?");
+        $stmt->bind_param('ssisi', $name, $description, $hours, $video_link, $id_lesson);
 
         if ($stmt->execute()) {
             header('Location: lessons.php?msg=success');
@@ -74,7 +74,7 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
 
             <div class="form-group">
                 <label class="form-label">Описание урока <span style="color: #ef4444;">*</span></label>
-                <textarea class="form-control" name="description" rows="4"><?= $lesson['description'] ?? ''?></textarea>
+                <textarea class="form-control" name="description" rows="4"><?= $lesson['description'] ?? '' ?></textarea>
                 <small style="color: #ef4444;"><?= $errors['description'] ?? '' ?></small>
             </div>
 
