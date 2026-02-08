@@ -14,9 +14,26 @@ class UserController extends BaseController
 
     public function registration(array $input)
     {
+        $errors = [];
 
-        if (empty($input['email']) || empty($input['password']) || empty($input['name'])) {
-            $this->sendValidationErrors(['input' => 'Все поля обязательны']);
+        if (!empty($input['email'])) {
+            if (!filter_var($input['email'], FILTER_SANITIZE_EMAIL)) $errors['email'] = 'введите корректный email';
+        } else {
+            $errors['email'] = 'email обязателен';
+        }
+        if (!empty($input['password'])) {
+            if (!preg_match('/[a-z]/', $input['password'])) $errors['password'] .= 'password должен содержать одну строчную букву;';
+            if (!preg_match('/[A-Z]/', $input['password'])) $errors['password'] .= 'password должен содержать одну заглавную букву;';
+            if (!preg_match('/\d/', $input['password'])) $errors['password'] .= 'password должен содержать одну цифру;';
+            if (!preg_match('/[!@#$%^&*()-_+=]/', $input['password'])) $errors['password'] .= 'password должен содержать один спец символ (!@#$%^&*()-_+=);';
+        } else {
+            $errors['password'] = 'password обязателен';
+        }
+        if (empty($input['name'])) $errors['name'] = 'name обязателен';
+
+
+        if (!empty($errors)) {
+            $this->sendValidationErrors($errors);
             return;
         }
 
@@ -42,10 +59,13 @@ class UserController extends BaseController
 
     public function authorization(array $input)
     {
-        if (empty($input['email']) || empty($input['password'])) {
-            $this->sendValidationErrors([
-                ['input' => 'Email и пароль обязательны']
-            ]);
+        $errors = [];
+
+        if (empty($input['email'])) $errors['email'] = 'email обязателен';
+        if (empty($input['password'])) $errors['password'] = 'password обязателен';
+
+        if (!empty($errors)) {
+            $this->sendValidationErrors($errors);
             return;
         }
 

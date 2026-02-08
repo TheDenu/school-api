@@ -77,7 +77,7 @@ class CourseController extends BaseController
             return;
         }
 
-        $stmt = $this->mysqli->prepare("SELECT name, start_date, end_date FROM courses WHERE id = ?");
+        $stmt = $this->mysqli->prepare("SELECT name, start_date, end_date, price FROM courses WHERE id = ?");
         $stmt->bind_param('i', $id_course);
         $stmt->execute();
         $course = $stmt->get_result()->fetch_assoc();
@@ -100,7 +100,7 @@ class CourseController extends BaseController
         $stmt = $this->mysqli->prepare("INSERT INTO orders (id_user, id_course, date_order) VALUES (?,?,?)");
         $stmt->bind_param("iis", $id_user, $id_course, $now);
         if ($stmt->execute()) {
-            $this->sendSuccess(['pay_url' => 'https://127.0.0.1:8000/school-api/payment-webhook']);
+            $this->sendSuccess(['pay_url' => 'https://payment.b?order_id=' . $this->mysqli->insert_id . '&api_host=https://module.b/school-api&price=' . $course['price']]);
         } else {
             $this->sendBadRequest('Ошибка записи на курс');
         }

@@ -1,8 +1,4 @@
 <?php
-require_once './vendor/autoload.php';
-
-use Firebase\JWT\JWT;
-use Firebase\JWT\Key;
 
 class JwtService
 {
@@ -17,21 +13,15 @@ class JwtService
         $issuedAt = time();
         $expire = $issuedAt + $expireInSeconds;
 
-        $payload = [
+        $payload = json_encode([
             'iat' => $issuedAt,
             'exp' => $expire,
             'data' => $data
-        ];
+        ]);
 
-        return JWT::encode($payload, $this->secretKey, 'HS256');
-    }
+        $base64Payload = rtrim(strtr(base64_encode($payload), '+/', '-_'), '=');
+        $signature = hash_hmac('sha256', $base64Payload, $this->secretKey);
 
-    public function validateToken(string $token){
-        try{
-            $decoded = JWT::decode($token, new Key($this->secretKey, 'HS256'));
-            return $decoded->data;
-        } catch (Exception $e){
-            return null;
-        }
+        return "$base64Payload.$signature";
     }
 }
