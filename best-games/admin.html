@@ -30,26 +30,9 @@
 		<main>
 			<div class="cont d--flex flex--center">
 				<form action="" class="form">
-					<label for="email">
-						<small>Введите email:</small>
-						<input
-							type="email"
-							name="email"
-							id="email"
-							class="form__input"
-						/> </label
-					><br />
-					<label for="surname">
-						<small>Введите фамилию:</small>
-						<input
-							type="text"
-							name="surname"
-							id="surname"
-							class="form__input"
-						/> </label
-					><br />
+					<h2>Добавление игры</h2>
 					<label for="name">
-						<small>Введите имя:</small>
+						<small>Введите название:</small>
 						<input
 							type="text"
 							name="name"
@@ -57,39 +40,44 @@
 							class="form__input"
 						/> </label
 					><br />
-					<label for="date">
-						<small>Введите дату рождения:</small>
+					<label for="genre">
+						<small>Введите жанр:</small>
+						<input type="text" name="genre" id="genre" class="form__input" />
+					</label>
+					<label for="price">
+						<small>Введите стоимость:</small>
 						<input
-							type="date"
-							name="date"
-							id="date"
+							type="number"
+							name="price"
+							id="price"
 							class="form__input"
 						/> </label
 					><br />
-					<label for="password">
-						<small>Введите пароль:</small>
+
+					<label for="company">
+						<small>Введите компанию разработчика:</small>
 						<input
-							type="password"
-							name="password"
-							id="password"
+							type="text"
+							name="company"
+							id="company"
 							class="form__input"
 						/> </label
 					><br />
-					<label for="password">
-						<small>Повторите пароль:</small>
+					<label for="description">
+						<small>Введите описание:</small>
+						<textarea name="description" id="description" class="form__input">
+						</textarea></label
+					><br />
+					<label for="img">
+						<small>Добавьте изображение:</small>
 						<input
-							type="password"
-							name="password_cnf"
-							id="password_cnf"
+							type="file"
+							name="img"
+							id="img"
 							class="form__input"
 						/> </label
 					><br />
-					<small
-						><input type="checkbox" name="assent" id="assent" /> Согласие на
-						обработку
-						<a href="" class="password-reset">персональных данных</a></small
-					>
-					<button type="submit" class="btn btn--100">Зарегистрироваться</button>
+					<button type="submit" class="btn btn--100">Добавить</button>
 				</form>
 			</div>
 		</main>

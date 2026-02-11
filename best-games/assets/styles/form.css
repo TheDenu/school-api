@@ -1,4 +1,4 @@
-main {
+.login, .register {
 	height: 75vh;
 }
 
@@ -7,6 +7,7 @@ main {
 }
 
 .form {
+	margin: 20px;
 	background-color: var(--bg-card);
 	width: 40%;
 	height: max-content;
@@ -16,7 +17,7 @@ main {
 
 .form__input {
 	width: 100%;
-	padding: 20px;
+	padding: 10px 20px;
 	height: 40px;
 	border: none;
 	border-radius: 10px;
