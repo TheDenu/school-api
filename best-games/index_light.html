@@ -1,0 +1,439 @@
+<!doctype html>
+<html lang="en">
+	<head>
+		<meta charset="UTF-8" />
+		<meta name="viewport" content="width=device-width, initial-scale=1.0" />
+		<title>Best Games - Главная</title>
+		<link rel="icon" href="assets/img/logo/logo.svg" />
+		<link rel="stylesheet" href="assets/styles/light.css" />
+		<link rel="stylesheet" href="assets/styles/main.css" />
+	</head>
+	<body>
+		<header>
+			<div class="cont d--flex">
+				<a href="index.html">
+					<img
+						src="assets/img/logo/logo.png"
+						alt="BestGames"
+						class="logo__img"
+					/>
+				</a>
+				<nav>
+					<a href="index.html#search" class="nav__el">Поиск</a>
+					<a href="profile.html" class="nav__el">Личный кабинет</a>
+					<a href="catalog.html" class="nav__el">Каталог игр</a>
+					<button type="button" class="btn">Войти</button>
+				</nav>
+			</div>
+		</header>
+		<main>
+			<div class="cont">
+				<section id="slider">
+					<h1>Новинки</h1>
+					<div class="slider">
+						<div class="slide slide--one">
+							<div class="slide__text">
+								<h2 class="slide__name">Resident Evil Requiem</h2>
+								<p class="slide__price">4299₽</p>
+								<a href="catalog.html" class="btn btn--accent">Подробнее</a>
+							</div>
+						</div>
+						<div class="slide slide--one">
+							<div class="slide__text">
+								<h2 class="slide__name">Resident Evil Requiem</h2>
+								<p class="slide__price">4299₽</p>
+								<a href="catalog.html" class="btn btn--accent">Подробнее</a>
+							</div>
+						</div>
+						<div class="slide slide--one">
+							<div class="slide__text">
+								<h2 class="slide__name">Resident Evil Requiem</h2>
+								<p class="slide__price">4299₽</p>
+								<a href="catalog.html" class="btn btn--accent">Подробнее</a>
+							</div>
+						</div>
+					</div>
+					<div class="slider__control">
+						<input type="radio" name="slide_indicator" id="1" checked />
+						<input type="radio" name="slide_indicator" id="2" />
+						<input type="radio" name="slide_indicator" id="3" />
+					</div>
+				</section>
+				<section id="search" class="d--flex">
+					<input
+						class="search"
+						type="search"
+						name="search"
+						id="search"
+						placeholder="Поиск игр"
+						title="Поиск игр"
+					/>
+					<button type="button" class="btn">Поиск</button>
+				</section>
+				<section id="advantages">
+					<h2>Наши преимущества</h2>
+					<div class="d--flex">
+						<div class="card card--advantages">
+							<img
+								src="assets/img/icons/price.png"
+								alt="Привлекательный цены"
+								class="card__icon"
+							/>
+							<h3>Привлекательный цены</h3>
+						</div>
+						<div class="card card--advantages">
+							<img
+								src="assets/img/icons/sale.png"
+								alt="Ежемесячные акции"
+								class="card__icon"
+							/>
+							<h3>Ежемесячные акции</h3>
+						</div>
+						<div class="card card--advantages">
+							<img
+								src="assets/img/icons/support.png"
+								alt="Круглосуточная поддержка"
+								class="card__icon"
+							/>
+							<h3>Круглосуточная поддержка</h3>
+						</div>
+						<div class="card card--advantages">
+							<img
+								src="assets/img/icons/fast.png"
+								alt="Быстрая покупка"
+								class="card__icon"
+							/>
+							<h3>Быстрая покупка</h3>
+						</div>
+					</div>
+				</section>
+				<section id="games">
+					<h2>Популярные игры</h2>
+					<div class="games d--flex">
+						<div
+							class="card card--game"
+							onclick="window.location.href = 'catalog.html'"
+						>
+							<div class="cont__img">
+								<img
+									src="assets/img/ResidentRequiem2.webp"
+									alt="ResidentRequiem"
+									class="card__img"
+								/>
+							</div>
+							<div class="card__info">
+								<h3>Resident Evil Requiem</h3>
+								<p><b>Жанр: </b>приключенческая игра</p>
+								<p><b>Разработчик: </b>CAPCOM Co., Ltd.</p>
+								<p><b>Цена: </b>4299₽</p>
+								<div class="rating">
+									<img
+										src="assets/img/icons/star.svg"
+										alt="star"
+										class="rating__img"
+									/>
+									<img
+										src="assets/img/icons/star.svg"
+										alt="star"
+										class="rating__img"
+									/>
+									<img
+										src="assets/img/icons/star.svg"
+										alt="star"
+										class="rating__img"
+									/>
+									<img
+										src="assets/img/icons/star.svg"
+										alt="star"
+										class="rating__img"
+									/>
+									<img
+										src="assets/img/icons/star.svg"
+										alt="star"
+										class="rating__img"
+									/>
+								</div>
+								<a href="catalog.html" class="btn">Каталог</a>
+							</div>
+						</div>
+						<div
+							class="card card--game"
+							onclick="window.location.href = 'catalog.html'"
+						>
+							<div class="cont__img">
+								<img
+									src="assets/img/HollowKnightSilksong.webp"
+									alt="ResidentRequiem"
+									class="card__img"
+								/>
+							</div>
+							<div class="card__info">
+								<h3>Hollow Knight: Silksong</h3>
+								<p><b>Жанр: </b>Metroidvania / 2D платформер</p>
+								<p><b>Разработчик: </b>Team Cherry</p>
+								<p><b>Цена: </b>1999₽</p>
+								<div class="rating">
+									<img
+										src="assets/img/icons/star.svg"
+										alt="star"
+										class="rating__img"
+									/>
+									<img
+										src="assets/img/icons/star.svg"
+										alt="star"
+										class="rating__img"
+									/>
+									<img
+										src="assets/img/icons/star.svg"
+										alt="star"
+										class="rating__img"
+									/>
+									<img
+										src="assets/img/icons/star.svg"
+										alt="star"
+										class="rating__img"
+									/>
+									<img
+										src="assets/img/icons/star.svg"
+										alt="star"
+										class="rating__img"
+									/>
+								</div>
+								<a href="catalog.html" class="btn">Каталог</a>
+							</div>
+						</div>
+						<div
+							class="card card--game"
+							onclick="window.location.href = 'catalog.html'"
+						>
+							<div class="cont__img">
+								<img
+									src="assets/img/Resident2.webp"
+									alt="ResidentRequiem"
+									class="card__img"
+								/>
+							</div>
+							<div class="card__info">
+								<h3>Resident Evil 2 Remake</h3>
+								<p><b>Жанр: </b>Хоррор / Survival</p>
+								<p><b>Разработчик: </b>Capcom</p>
+								<p><b>Цена: </b>3999₽</p>
+								<div class="rating">
+									<img
+										src="assets/img/icons/star.svg"
+										alt="star"
+										class="rating__img"
+									/>
+									<img
+										src="assets/img/icons/star.svg"
+										alt="star"
+										class="rating__img"
+									/>
+									<img
+										src="assets/img/icons/star.svg"
+										alt="star"
+										class="rating__img"
+									/>
+									<img
+										src="assets/img/icons/star.svg"
+										alt="star"
+										class="rating__img"
+									/>
+									<img
+										src="assets/img/icons/star.svg"
+										alt="star"
+										class="rating__img"
+									/>
+								</div>
+								<a href="catalog.html" class="btn">Каталог</a>
+							</div>
+						</div>
+						<div
+							class="card card--game"
+							onclick="window.location.href = 'catalog.html'"
+						>
+							<div class="cont__img">
+								<img
+									src="assets/img/Resident4.webp"
+									alt="ResidentRequiem"
+									class="card__img"
+								/>
+							</div>
+							<div class="card__info">
+								<h3>Resident Evil 4 Remake</h3>
+								<p><b>Жанр: </b>Экшен-хоррор / TPS</p>
+								<p><b>Разработчик: </b>Capcom</p>
+								<p><b>Цена: </b>4999₽</p>
+								<div class="rating">
+									<img
+										src="assets/img/icons/star.svg"
+										alt="star"
+										class="rating__img"
+									/>
+									<img
+										src="assets/img/icons/star.svg"
+										alt="star"
+										class="rating__img"
+									/>
+									<img
+										src="assets/img/icons/star.svg"
+										alt="star"
+										class="rating__img"
+									/>
+									<img
+										src="assets/img/icons/star.svg"
+										alt="star"
+										class="rating__img"
+									/>
+									<img
+										src="assets/img/icons/star.svg"
+										alt="star"
+										class="rating__img"
+									/>
+								</div>
+								<a href="catalog.html" class="btn">Каталог</a>
+							</div>
+						</div>
+						<div
+							class="card card--game"
+							onclick="window.location.href = 'catalog.html'"
+						>
+							<div class="cont__img">
+								<img
+									src="assets/img/EasyDeliveryCo.webp"
+									alt="ResidentRequiem"
+									class="card__img"
+								/>
+							</div>
+							<div class="card__info">
+								<h3>Easy Delivery Co</h3>
+								<p><b>Жанр: </b>Симулятор / Инди</p>
+								<p><b>Разработчик: </b>Low-Gravity</p>
+								<p><b>Цена: </b>799₽</p>
+								<div class="rating">
+									<img
+										src="assets/img/icons/star.svg"
+										alt="star"
+										class="rating__img"
+									/>
+									<img
+										src="assets/img/icons/star.svg"
+										alt="star"
+										class="rating__img"
+									/>
+									<img
+										src="assets/img/icons/star.svg"
+										alt="star"
+										class="rating__img"
+									/>
+									<img
+										src="assets/img/icons/star.svg"
+										alt="star"
+										class="rating__img"
+									/>
+									<img
+										src="assets/img/icons/star.svg"
+										alt="star"
+										class="rating__img"
+									/>
+								</div>
+								<a href="catalog.html" class="btn">Каталог</a>
+							</div>
+						</div>
+						<div
+							class="card card--game"
+							onclick="window.location.href = 'catalog.html'"
+						>
+							<div class="cont__img">
+								<img
+									src="assets/img/ResidentZero.webp"
+									alt="ResidentRequiem"
+									class="card__img"
+								/>
+							</div>
+							<div class="card__info">
+								<h3>Resident Evil Zero HD Remaster</h3>
+								<p><b>Жанр: </b>Хоррор / Survival</p>
+								<p><b>Разработчик: </b>Capcom</p>
+								<p><b>Цена: </b>1499₽</p>
+								<div class="rating">
+									<img
+										src="assets/img/icons/star.svg"
+										alt="star"
+										class="rating__img"
+									/>
+									<img
+										src="assets/img/icons/star.svg"
+										alt="star"
+										class="rating__img"
+									/>
+									<img
+										src="assets/img/icons/star.svg"
+										alt="star"
+										class="rating__img"
+									/>
+									<img
+										src="assets/img/icons/star.svg"
+										alt="star"
+										class="rating__img"
+									/>
+									<img
+										src="assets/img/icons/star.svg"
+										alt="star"
+										class="rating__img"
+									/>
+								</div>
+								<a href="catalog.html" class="btn">Каталог</a>
+							</div>
+						</div>
+					</div>
+				</section>
+				<section id="partners">
+					<h2>Наши партнеры</h2>
+					<div class="d--flex">
+						<div class="card card--partner">
+							<b class="logo-parter">Valve</b>
+						</div>
+						<div class="card card--partner">
+							<b class="logo-parter">Rockstar Games</b>
+						</div>
+						<div class="card card--partner">
+							<b class="logo-parter">Riot Games</b>
+						</div>
+					</div>
+				</section>
+			</div>
+		</main>
+		<footer>
+			<div class="cont d--flex">
+				<img src="assets/img/logo/logo.png" alt="logo" class="logo__img" />
+				<nav class="nav--footer">
+					<b>Контакты:</b>
+					<a href="tel:88009995599" class="nav__el nav__el--footer"
+						>8-800-999-55-99</a
+					>
+					<a href="mailto:best@games.ru" class="nav__el nav__el--footer"
+						>best@games.ru</a
+					>
+				</nav>
+				<nav class="nav--footer">
+					<a href="" class="nav__el nav__el--footer">Клиентам</a>
+					<a href="" class="nav__el nav__el--footer">Партнерам</a>
+					<a href="" class="nav__el nav__el--footer">О нас</a>
+					<a href="" class="nav__el nav__el--footer">Контакты</a>
+				</nav>
+				<nav class="nav--footer">
+					<a href="index.html" class="nav__el nav__el--footer">Главная</a>
+					<a href="register.html" class="nav__el nav__el--footer"
+						>Регистрация</a
+					>
+					<a href="login.html" class="nav__el nav__el--footer">Авторизация</a>
+					<a href="profile.html" class="nav__el nav__el--footer"
+						>Личный кабинет</a
+					>
+					<a href="index.html#search" class="nav__el nav__el--footer">Поиск</a>
+				</nav>
+			</div>
+		</footer>
+	</body>
+</html>
