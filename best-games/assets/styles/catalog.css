@@ -1,0 +1,14 @@
+.filter-select {
+	width: 100%;
+    padding: 5px 20px;
+	height: 40px;
+	border: none;
+	border-radius: 10px;
+	background-color: var(--bg-main);
+	color: var(--text-bright);
+	margin: 10px 0;
+}
+
+.card--game {
+	cursor: default;
+}
