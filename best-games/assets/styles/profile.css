@@ -1,0 +1,17 @@
+.profile {
+	flex-wrap: wrap;
+	gap: 20px;
+	height: 100%;
+}
+
+table {
+	width: 100%;
+	text-align: center;
+	border-collapse: collapse;
+}
+
+th,
+td {
+	border: 1px solid var(--text-main);
+	padding: 10px;
+}

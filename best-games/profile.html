@@ -1,0 +1,115 @@
+<!doctype html>
+<html lang="en">
+	<head>
+		<meta charset="UTF-8" />
+		<meta name="viewport" content="width=device-width, initial-scale=1.0" />
+		<title>BestGames - Личный кабинет</title>
+		<link rel="icon" href="assets/img/logo/logo.svg" />
+		<link rel="stylesheet" href="assets/styles/dark.css" />
+		<link rel="stylesheet" href="assets/styles/main.css" />
+		<link rel="stylesheet" href="assets/styles/profile.css" />
+	</head>
+	<body>
+		<header>
+			<div class="cont d--flex">
+				<a href="index.html">
+					<img
+						src="assets/img/logo/logo.png"
+						alt="BestGames"
+						class="logo__img"
+					/>
+				</a>
+				<nav>
+					<a href="index.html#search" class="nav__el">Поиск</a>
+					<a href="profile.html" class="nav__el">Личный кабинет</a>
+					<a href="catalog.html" class="nav__el">Каталог игр</a>
+					<button type="button" class="btn">Войти</button>
+				</nav>
+			</div>
+		</header>
+		<main>
+			<div class="cont">
+				<section class="d--flex profile">
+					<div class="card card--50">
+						<h3>Персональные данные</h3>
+						<p><b>Email: </b>mail@mail.ru</p>
+						<p><b>Фамилия: </b>Волковский</p>
+						<p><b>Имя: </b>Егор</p>
+						<p><b>Дата рождения: </b>22.05.2006</p>
+						<p><b>Номер телефона: </b>8 999 999 99 99</p>
+					</div>
+					<div class="card card--50">
+						<h3>Настройки</h3>
+						<button type="button" class="btn">Смена пароля</button><br><br>
+						<button type="button" class="btn" onclick="window.location.href='index_light.html'">Светлая тема</button>
+					</div>
+					<div class="card card--100">
+						<h3>История покупок</h3>
+						<table>
+							<thead>
+								<tr>
+									<th>Дата покупки</th>
+									<th>Название</th>
+									<th>Стоимость</th>
+								</tr>
+							</thead>
+							<tbody>
+								<tr>
+									<td>08.02.2026</td>
+									<td>Resident evil 2 remake</td>
+									<td>3999₽</td>
+								</tr>
+								<tr>
+									<td>08.02.2026</td>
+									<td>Resident evil 2 remake</td>
+									<td>3999₽</td>
+								</tr>
+								<tr>
+									<td>08.02.2026</td>
+									<td>Resident evil 2 remake</td>
+									<td>3999₽</td>
+								</tr>
+								<tr>
+									<td>08.02.2026</td>
+									<td>Resident evil 2 remake</td>
+									<td>3999₽</td>
+								</tr>
+							</tbody>
+						</table>
+					</div>
+				</section>
+			</div>
+		</main>
+		<footer>
+			<div class="cont d--flex">
+				<img src="assets/img/logo/logo.png" alt="logo" class="logo__img" />
+				<nav class="nav--footer">
+					<b>Контакты:</b>
+					<a href="tel:88009995599" class="nav__el nav__el--footer"
+						>8-800-999-55-99</a
+					>
+					<a href="mailto:best@games.ru" class="nav__el nav__el--footer"
+						>best@games.ru</a
+					>
+				</nav>
+				<nav class="nav--footer">
+					<a href="" class="nav__el nav__el--footer">Клиентам</a>
+					<a href="" class="nav__el nav__el--footer">Партнерам</a>
+					<a href="" class="nav__el nav__el--footer">О нас</a>
+					<a href="" class="nav__el nav__el--footer">Контакты</a>
+				</nav>
+				<nav class="nav--footer">
+					<a href="index.html" class="nav__el nav__el--footer">Главная</a>
+					<a href="register.html" class="nav__el nav__el--footer"
+						>Регистрация</a
+					>
+					<a href="login.html" class="nav__el nav__el--footer">Авторизация</a>
+					<a href="profile.html" class="nav__el nav__el--footer"
+						>Личный кабинет</a
+					>
+					<a href="index.html#search" class="nav__el nav__el--footer">Поиск</a>
+				</nav>
+			</div>
+		</footer>
+	</body>
+</html>

@@ -1,0 +1,41 @@
+main {
+	height: 75vh;
+}
+
+.flex--center {
+	justify-content: center;
+}
+
+.form {
+	background-color: var(--bg-card);
+	width: 40%;
+	height: max-content;
+	padding: 20px;
+	border-radius: 10px;
+}
+
+.form__input {
+	width: 100%;
+	padding: 20px;
+	height: 40px;
+	border: none;
+	border-radius: 10px;
+	background-color: var(--bg-main);
+	color: var(--text-bright);
+	margin: 10px 0;
+}
+
+.btn--100{
+	width: 100%;
+	margin-top: 20px;
+}
+
+.password-reset{
+	margin: 0 auto;
+	color: var(--text-bright);
+	text-decoration: underline;
+}
+
+.password-reset:hover{
+	color: var(--primary);
+}
