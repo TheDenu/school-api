@@ -48,13 +48,19 @@ class Router
     public function dispatch($method, $uri)
     {
         $path = trim(parse_url($uri, PHP_URL_PATH), '/');
-        if (!str_starts_with($path, 'school-api/')) {
-            http_response_code(404);
-            echo json_encode(['message' => 'API only']);
-            exit();
-        }
+        $array = explode('/', $path);
 
-        $path = substr($path, 11);
+        if (count($array) === 1) {
+            $path = $array[0];
+        } elseif (count($array) === 2) {
+            $path = $array[0];
+            $_GET['id'] = $array[1];
+        } else {
+            $path = $array[0] . '/' . $array[2];
+            $_GET['id_course'] = $array[1];
+            //$path = parse_url($path, PHP_URL_PATH);
+        }
+        
         $input = $this->getInputData();
         $route = $this->routes[$method][$path] ?? null;
 

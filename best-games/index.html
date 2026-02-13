@@ -22,7 +22,7 @@
 					<a href="index.html#search" class="nav__el">Поиск</a>
 					<a href="profile.html" class="nav__el">Личный кабинет</a>
 					<a href="catalog.html" class="nav__el">Каталог игр</a>
-					<button type="button" class="btn" onclick="window.location.href='login.html'">Войти</button>
+					<a href="login.html" class="btn">Войти</a>
 				</nav>
 			</div>
 		</header>
@@ -64,7 +64,7 @@
 						class="search"
 						type="search"
 						name="search"
-						id="search"
+						id="search-input"
 						placeholder="Поиск игр"
 						title="Поиск игр"
 					/>
@@ -110,10 +110,7 @@
 				<section id="games">
 					<h2>Популярные игры</h2>
 					<div class="games d--flex">
-						<div
-							class="card card--game"
-							onclick="window.location.href = 'catalog.html'"
-						>
+						<div class="card card--game">
 							<div class="cont__img">
 								<img
 									src="assets/img/ResidentRequiem2.webp"

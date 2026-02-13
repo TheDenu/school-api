@@ -12,7 +12,7 @@ class CourseController extends BaseController
 
     public function coursesHandler()
     {
-        if (isset($_GET['course_id'])) {
+        if (isset($_GET['id'])) {
             $this->listLessons();
         } else {
             $this->listCourses();
@@ -53,7 +53,7 @@ class CourseController extends BaseController
 
     public function listLessons()
     {
-        $id_course = $_GET['course_id'];
+        $id_course = $_GET['id'];
 
         $stmt = $this->mysqli->prepare("SELECT * FROM lessons WHERE id_course = ?");
         $stmt->bind_param('i', $id_course);
@@ -69,7 +69,7 @@ class CourseController extends BaseController
 
     public function orderCourse()
     {
-        $id_course = $_GET['course_id'];
+        $id_course = $_GET['id_course'];
         $id_user = $_SERVER['AUTH_USER_ID'];
 
         if (!$id_course) {
@@ -100,7 +100,7 @@ class CourseController extends BaseController
         $stmt = $this->mysqli->prepare("INSERT INTO orders (id_user, id_course, date_order) VALUES (?,?,?)");
         $stmt->bind_param("iis", $id_user, $id_course, $now);
         if ($stmt->execute()) {
-            $this->sendSuccess(['pay_url' => 'https://payment.b?order_id=' . $this->mysqli->insert_id . '&api_host=https://module.b/school-api&price=' . $course['price']]);
+            $this->sendSuccess(['pay_url' => 'https://payment.b?order_id=' . $this->mysqli->insert_id . '&api_host=https://module.b&price=' . $course['price']]);
         } else {
             $this->sendBadRequest('Ошибка записи на курс');
         }

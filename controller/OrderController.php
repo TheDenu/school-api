@@ -25,7 +25,7 @@ class OrderController extends BaseController
 
     public function deleteOrder()
     {
-        $id_order = (int)$_GET['order_id'];
+        $id_order = (int)$_GET['id'];
 
         $stmt = $this->mysqli->prepare("SELECT id_status_payment FROM orders WHERE id_order = ?");
         $stmt->bind_param('i', $id_order);

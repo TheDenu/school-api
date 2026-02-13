@@ -24,6 +24,6 @@ $router->addRoute('POST', 'auth', 'user', 'authorization', null);
 $router->addRoute('GET', 'courses', 'courses', 'coursesHandler', 'auth');
 $router->addRoute('POST', 'courses/buy', 'courses', 'orderCourse', 'auth');
 $router->addRoute('POST', 'payment-webhook', 'orders', 'payment', null);
-$router->addRoute('GET', 'orders', 'orders', 'deleteOrder', 'auth');
+$router->addRoute('DELETE', 'orders', 'orders', 'deleteOrder', 'auth');
 
 $router->dispatch($_SERVER['REQUEST_METHOD'], $_SERVER['REQUEST_URI']);
