@@ -1,30 +1,28 @@
 <?php
-session_start();
-
 if ($_SERVER['REQUEST_METHOD'] === 'POST') {
-    $user_id = $_POST['id_user'];
+    $student_id = $_POST['id_user'];
     $course_id = $_POST['id_course'];
 
-    $jsonData = json_encode([
-        'student_id' => $user_id,
+    $json = json_encode([
+        'student_id' => $student_id,
         'course_id' => $course_id
     ]);
 
-    $first_number = makeRequest($jsonData);
+    $first_number = makeRequest($json);
     $second_number = mt_rand(10000, 99999) . '1';
 
     $number = $first_number . $second_number;
 }
 
-function makeRequest($jsonData)
+function makeRequest($json)
 {
     $ch = curl_init();
 
     curl_setopt_array($ch, [
-        CURLOPT_URL => 'https://certificate.local/create-sertificate/',
-        CURLOPT_RETURNTRANSFER => true,
         CURLOPT_POST => true,
-        CURLOPT_POSTFIELDS => $jsonData
+        CURLOPT_RETURNTRANSFER => true,
+        CURLOPT_POSTFIELDS => $json,
+        CURLOPT_URL => 'https://certificate.local/create-sertificate/'
     ]);
 
     $response = curl_exec($ch);
@@ -32,15 +30,16 @@ function makeRequest($jsonData)
 
     $data = json_decode($response, true) ?: [];
 
-    if ($httpCode === 200) {
+    if ($httpCode === 200){
         return $data['course_number'];
-    } else {
+    } else{
         return $data['message'] ?? '';
     }
 }
 
-?>
 
+
+?>
 <!DOCTYPE html>
 <html lang="en">
 
@@ -51,7 +50,7 @@ function makeRequest($jsonData)
 </head>
 
 <body>
-    <h1>номер сертификата: <?= $number ?></h1>
+    <h2>Номер сертификата: <?= $number ?></h2>
 </body>
 
 </html>

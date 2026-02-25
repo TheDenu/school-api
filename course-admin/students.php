@@ -1,7 +1,7 @@
 <?php
 session_start();
 
-require_once '../school-api/service/DBConnect.php';
+require_once '../service/DBConnect.php';
 $mysqli = getDBConnection();
 
 

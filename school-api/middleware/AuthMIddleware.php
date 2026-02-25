@@ -1,4 +1,5 @@
 <?php
+
 class AuthMiddleware
 {
     private $mysqli;
@@ -28,28 +29,20 @@ class AuthMiddleware
 
         $token = substr($auth, 7);
         $stmt = $this->mysqli->prepare("
-            SELECT ut.id_user, u.id_role
-            FROM user_tokens ut
-            JOIN users u USING(id_user)
-            WHERE ut.token = ? AND ut.expires_at > NOW()
+            SELECT user_id FROM user_tokens
+            WHERE token = ? AND expired_at > NOW()
         ");
         $stmt->bind_param('s', $token);
         $stmt->execute();
         $result = $stmt->get_result();
 
         if ($row = $result->fetch_assoc()) {
-            $_SERVER['AUTH_USER_ID'] = $row['id_user'];
-            $_SERVER['AUTH_ROLE_ID'] = $row['id_role'];
+            $_SERVER['AUTH_USER_ID'] = $row['user_id'];
             $next();
             exit();
         } else {
             http_response_code(401);
             echo json_encode(['message' => 'Неверный или истекший токен']);
         }
-    }
-
-    public static function isAdmin()
-    {
-        return isset($_SERVER['AUTH_ROLE_ID']) && $_SERVER['AUTH_ROLE_ID'] == 2;
     }
 }

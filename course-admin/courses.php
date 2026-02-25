@@ -1,7 +1,7 @@
 <?php
 date_default_timezone_set('Europe/Moscow');
 session_start();
-require_once '../school-api/service/DBConnect.php';
+require_once '../service/DBConnect.php';
 $mysqli = getDBConnection();
 
 if (!isset($_SESSION['admin']) || !$_SESSION['admin']) {
