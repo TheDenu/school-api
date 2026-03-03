@@ -1,21 +1,29 @@
 <?php
-date_default_timezone_set('Europe/Moscow');
 session_start();
-require_once '../school-api/service/DBConnect.php';
+
+require_once 'service/DBConnect.php';
 $mysqli = getDBConnection();
 
-$idCourse = $_GET['id'] ?? null;
+$course_id = $_GET['id'] ?? null;
 
-if(!$idCourse){
-    header('Location: courses.php');
+if (!$course_id) {
+    header('Location: courses.php?msg="курс не выбран"');
     exit;
-}else{
-    $stmt = $mysqli->prepare("DELETE FROM courses WHERE id = ?");
-    $stmt->bind_param('i', $idCourse);
-    if($stmt->execute()){
-        $msg = 'success';
-    }else{
-        $msg = 'error';
+} else {
+    $stmt = $mysqli->prepare("SELECT order_id FROM orders WHERE course_id = ?");
+    $stmt->bind_param('i', $course_id);
+    $stmt->execute();
+    $result = $stmt->get_result();
+    $count = $result->num_rows;
+
+    if ($count >= 1) {
+        header('Location: courses.php?msg="failed"');
+        exit;
+    } else {
+        $stmt = $mysqli->prepare("DELETE FROM courses WHERE course_id = ?");
+        $stmt->bind_param('i', $course_id);
+        $stmt->execute();
+        header('Location: courses.php?mgs="success"');
+        exit;
     }
-    header('Location: courses.php?mgs='. $msg);
 }
