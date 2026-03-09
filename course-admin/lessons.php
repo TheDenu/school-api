@@ -1,6 +1,6 @@
 <?php
 session_start();
-require_once '../school-api/service/DBConnect.php';
+require_once 'service/DBConnect.php';
 $mysqli = getDBConnection();
 
 $course_id = (int)($_GET['id']);
@@ -18,7 +18,7 @@ $lessons = $stmt->get_result()->fetch_all(MYSQLI_ASSOC);
 ?>
 
 <!DOCTYPE html>
-<html lang="en">
+<html lang="ru">
 
 <head>
     <meta charset="UTF-8" />
@@ -60,7 +60,7 @@ $lessons = $stmt->get_result()->fetch_all(MYSQLI_ASSOC);
         <!-- Кнопка добавить урок -->
         <div class="d-flex justify-content-between align-items-center mb-4">
             <h2>Уроки курса - <?= $course['name'] ?></h2>
-            <a href="lessons_add.html" class="btn btn-success">Добавить урок</a>
+            <a href="lesson_add.php?course_id=<?= $course_id ?>" class="btn btn-success">Добавить урок</a>
         </div>
         <!-- Уроки -->
         <?php if (empty($lessons)): ?>
@@ -88,7 +88,7 @@ $lessons = $stmt->get_result()->fetch_all(MYSQLI_ASSOC);
                                                 <a href="<?= $lesson['video_link'] ?? '' ?>" class="btn btn-primary btn-sm">Видео</a>
                                             <?php endif; ?>
                                             <a
-                                                href="lesson_edit.php?id<?= $lesson['lesson_id'] ?>"
+                                                href="lesson_edit.php?lesson_id=<?= $lesson['lesson_id'] ?>&course_id=<?= $course_id ?>"
                                                 class="btn btn-warning btn-sm text-white">Редактировать</a>
                                             <a href="lesson_delete.php?id=<?= $lesson['lesson_id'] ?>" class="btn btn-danger btn-sm">Удалить</a>
                                         </div>
