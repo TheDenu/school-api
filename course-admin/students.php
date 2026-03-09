@@ -104,19 +104,19 @@ $orders = $stmt->get_result()->fetch_all(MYSQLI_ASSOC);
                     <tbody>
                         <?php foreach ($orders as $order): ?>
                             <tr class="align-middle border border-dark border-1">
-                                <td class="fw-semibold bg-secondary-subtle text-center border-end border-dark border-1">
+                                <td class="fw-semibold text-center border-end border-dark border-1">
                                     <?= $order['full_name'] ?>
                                 </td>
-                                <td class="text-center bg-secondary-subtle border-end border-dark border-1">
+                                <td class="text-center border-end border-dark border-1">
                                     <?= $order['email'] ?>
                                 </td>
-                                <td class="text-center bg-secondary-subtle border-end border-dark border-1">
+                                <td class="text-center border-end border-dark border-1">
                                     <?= $order['title'] ?>
                                 </td>
-                                <td class="text-center bg-secondary-subtle border-end border-dark border-1">
+                                <td class="text-center border-end border-dark border-1">
                                     <small> <?= $order['order_date'] ?></small>
                                 </td>
-                                <td class="text-center bg-secondary-subtle border-end border-dark border-1">
+                                <td class="text-center border-end border-dark border-1">
                                     <?php
                                     $badgeClass = match ($order['payment']) {
                                         'оплачено' => 'bg-success',
@@ -127,7 +127,7 @@ $orders = $stmt->get_result()->fetch_all(MYSQLI_ASSOC);
                                     ?>
                                     <span class="badge <?= $badgeClass ?>"><?= $order['payment'] ?></span>
                                 </td>
-                                <td class="text-center bg-secondary-subtle">
+                                <td class="text-center">
                                     <form method="POST" action="certificate.php">
                                         <input type="text" name="course_id" value="<?= $order['course_id'] ?>" hidden>
                                         <input type="text" name="user_id" value="<?= $order['user_id'] ?>" hidden>
@@ -141,8 +141,7 @@ $orders = $stmt->get_result()->fetch_all(MYSQLI_ASSOC);
             </div>
         </div>
     </div>
-
-
+    <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/js/bootstrap.bundle.min.js"></script>
 </body>
 
 </html>

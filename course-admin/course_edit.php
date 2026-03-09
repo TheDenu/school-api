@@ -7,7 +7,7 @@ if (!isset($_SESSION['admin']) || !$_SESSION['admin']) {
     exit;
 }
 
-require_once '../school-api/service/DBConnect.php';
+require_once 'service/DBConnect.php';
 require_once 'service/coverCreate.php';
 require_once 'service/validateCourse.php';
 
@@ -21,7 +21,7 @@ if (!$courseId || !is_numeric($courseId)) {
 }
 
 $course = [];
-$stmt = $mysqli->prepare("SELECT * FROM courses WHERE id = ?");
+$stmt = $mysqli->prepare("SELECT * FROM courses WHERE course_id = ?");
 $stmt->bind_param('i', $courseId);
 $stmt->execute();
 $result = $stmt->get_result();
@@ -42,12 +42,12 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
     $errors = validate($name, $description, $hours, $price, $start_date, $end_date);
 
     $coverPath = $course['img']; // сохраняем старую
-    if (isset($_FILES['img']) && $_FILES['img']['error'] === UPLOAD_ERR_OK) {
+    if (empty($errors) && isset($_FILES['img']) && $_FILES['img']['error'] === UPLOAD_ERR_OK) {
         $newCoverPath = processCoverImg($_FILES['img']);
         if ($newCoverPath !== false) {
             $coverPath = $newCoverPath;
-            if ($course['img'] && file_exists("./uploads/cover/{$course['img']}")) {
-                unlink("./uploads/cover/{$course['img']}");
+            if ($course['img'] && file_exists("./uploads/{$course['img']}")) {
+                unlink("./uploads/{$course['img']}");
             }
         } else {
             $errors[] = 'Ошибка обработки изображения';
@@ -55,7 +55,7 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
     }
 
     if (empty($errors)) {
-        $stmt = $mysqli->prepare("UPDATE courses SET name=?, description=?, hours=?, price=?, start_date=?, end_date=?, img=? WHERE id=?");
+        $stmt = $mysqli->prepare("UPDATE courses SET name=?, description=?, hours=?, price=?, start_date=?, end_date=?, img=? WHERE course_id=?");
         $stmt->bind_param('ssissssi', $name, $description, $hours, $price, $start_date, $end_date, $coverPath, $courseId);
 
         if ($stmt->execute()) {
@@ -73,69 +73,152 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
 <html lang="ru">
 
 <head>
-    <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>✏️ Редактировать курс</title>
-    <link rel="stylesheet" href="./styles/form.css">
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>Админ панель - Добавление курса</title>
+    <link
+        href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/css/bootstrap.min.css"
+        rel="stylesheet" />
 </head>
 
 <body>
-    <div class="form-container">
-        <h1 class="form-title">✏️ Редактировать курс</h1>
-
-        <form method="POST" enctype="multipart/form-data">
-            <div class="form-group">
-                <label class="form-label">Название курса <span style="color: #ef4444;">*</span></label>
-                <input type="text" class="form-control" name="name" value="<?= $course['name'] ?? '' ?>">
-                <small style="color: #e70d0d;"><?= $errors['name'] ?? ''  ?></small>
-            </div>
-
-            <div class="form-group">
-                <label class="form-label">Описание курса</label>
-                <textarea class="form-control" name="description" rows="4" maxlength="100"><?= $course['description'] ?? '' ?></textarea>
-                <small style="color: #e70d0d;"><?= $errors['description'] ?? ''  ?></small>
-            </div>
-
-            <div class="form-row">
-                <div class="form-group">
-                    <label class="form-label">Продолжительность (часы) <span style="color: #ef4444;">*</span></label>
-                    <input type="number" class="form-control" name="hours" value="<?= $course['hours'] ?? '' ?>">
-                    <small style="color: #e70d0d;"><?= $errors['hours'] ?? ''  ?></small>
+    <nav class="navbar navbar-expand-lg navbar-dark bg-primary">
+        <div class="container">
+            <button
+                type="button"
+                class="navbar-toggler"
+                data-bs-toggle="collapse"
+                data-bs-target="#navbarNav">
+                <span class="navbar-toggler-icon"></span>
+            </button>
+            <div class="collapse navbar-collapse" id="navbarNav">
+                <div class="navbar-nav me-auto">
+                    <div class="nav-item">
+                        <a href="courses.html" class="nav-link">Курсы</a>
+                    </div>
+                    <div class="nav-item">
+                        <a href="students.html" class="nav-link">Студенты</a>
+                    </div>
                 </div>
-                <div class="form-group">
-                    <label class="form-label">Цена (₽) <span style="color: #ef4444;">*</span></label>
-                    <input type="number" class="form-control" name="price" step="0.01" value="<?= $course['price'] ?? '' ?>">
-                    <small style="color: #e70d0d;"><?= $errors['price'] ?? ''  ?></small>
+                <div class="navbar-nav">
+                    <div class="nav-item">
+                        <a href="logout.php" class="nav-link">Выход</a>
+                    </div>
                 </div>
             </div>
+        </div>
+    </nav>
+    <div class="container mt-4">
+        <div class="container-fluid mt-5 pt-4">
+            <div class="row justify-content-center">
+                <div class="card shadow p-0">
+                    <div class="card-header bg-primary text-white">
+                        <div class="h3 mb-0">
+                            Добавить курс
+                        </div>
+                    </div>
+                    <div class="card-body p-4">
+                        <form method="POST" enctype="multipart/form-data">
+                            <div class="row">
+                                <div class="col-lg-9">
+                                    <div class="mb-3">
+                                        <label for="name" class="form-label fw-bold">Название курса
+                                            <span class="text-danger">*</span></label>
+                                        <input type="text" class="form-control" name="name" value="<?= $course['name'] ?>">
+                                        <small class="text-danger"><?= $errors['name'] ?? ''  ?></small>
+                                    </div>
 
-            <div class="form-row">
-                <div class="form-group">
-                    <label class="form-label">Дата начала <span style="color: #ef4444;">*</span></label>
-                    <input type="date" class="form-control" name="start_date" value="<?= $course['start_date'] ?? '' ?>">
-                    <small style="color: #e70d0d;"><?= $errors['start_date'] ?? ''  ?></small>
+                                    <div class="mb-3">
+                                        <label class="form-label fw-bold">Описание курса</label>
+                                        <textarea class="form-control" name="description" rows="4"><?= $course['description'] ?></textarea>
+                                        <small class="text-danger"><?= $errors['description'] ?? ''  ?></small>
+                                    </div>
+
+                                    <div class="row">
+                                        <div class="col-md-6">
+                                            <div class="mb-3">
+                                                <label for="hours" class="form-label fw-bold">Длительность
+                                                    <span class="text-danger">*</span></label>
+                                                <input type="number" class="form-control" name="hours" value="<?= $course['hours'] ?>">
+                                                <small style="color: #e70d0d;"><?= $errors['hours'] ?? ''  ?></small>
+                                            </div>
+                                        </div>
+                                        <div class="col-md-6">
+                                            <div class="mb-3">
+                                                <label for="price" class="form-label fw-bold">Цена <span class="text-danger">*</span></label>
+                                                <input type="number" class="form-control" name="price" step="0.01" value="<?= $course['price'] ?>">
+                                                <small style="color: #e70d0d;"><?= $errors['price'] ?? ''  ?></small>
+                                            </div>
+                                        </div>
+                                    </div>
+
+                                    <div class="row">
+                                        <div class="col-md-6">
+                                            <div class="mb-3">
+                                                <label for="start_date" class="form-label fw-bold">Дата начала
+                                                    <span class="text-danger">*</span></label>
+                                                <input type="date" class="form-control" name="start_date" value="<?= $course['start_date'] ?>">
+                                                <small style="color: #e70d0d;"><?= $errors['start_date'] ?? ''  ?></small>
+                                            </div>
+                                        </div>
+                                        <div class="col-md-6">
+                                            <div class="mb-3">
+                                                <label for="end_date" class="form-label fw-bold">Дата конца
+                                                    <span class="text-danger">*</span></label>
+                                                <input type="date" class="form-control" name="end_date" value="<?= $course['end_date'] ?>">
+                                                <small style="color: #e70d0d;"><?= $errors['end_date'] ?? ''  ?></small>
+                                            </div>
+                                        </div>
+                                    </div>
+                                </div>
+                                <div class="col-lg-3">
+                                    <div class="mb-4">
+                                        <label for="img" class="form-label fw-bold">Обложка курса</label>
+                                        <input
+                                            type="file"
+                                            class="form-control"
+                                            id="img"
+                                            name="img"
+                                            accept="image/*" />
+                                        <img
+                                            id="preview"
+                                            class="mt-2 mx-auto img-thumbnail rounded border"
+                                            style="max-height: 250px; display: <?= $course['img'] ? 'block' : 'none' ?>"
+                                            src="uploads/<?= $course['img'] ?>" />
+
+                                        <small style="color: #e70d0d;"><?= $errors['img'] ?? '' ?></small>
+                                    </div>
+                                </div>
+                            </div>
+                            <div class="d-grid gap-2 d-sm-flex justify-content-sm-center">
+                                <a href="courses.html" class="btn btn-danger w-25">Отмена</a>
+                                <button type="submit" class="btn btn-primary w-25">
+                                    Добавить
+                                </button>
+                            </div>
+                        </form>
+                    </div>
                 </div>
-                <div class="form-group">
-                    <label class="form-label">Дата окончания <span style="color: #ef4444;">*</span></label>
-                    <input type="date" class="form-control" name="end_date" value="<?= $course['end_date'] ?? '' ?>">
-                    <small style="color: #e70d0d;"><?= $errors['end_date'] ?? ''  ?></small>
-                </div>
             </div>
-
-            <div class="form-group">
-                <label class="form-label">Обложка (JPG, макс. 2МБ)</label>
-                <input type="file" class="form-control" name="img" accept="image/jpeg,image/jpg">
-                <small style="color: #e70d0d;"><?= $errors['img'] ?? ''  ?></small>
-            </div>
-
-            <div class="form-actions">
-                <a href="courses.php" class="btn btn-secondary">❌ Отмена</a>
-                <button type="submit" class="btn btn-primary">
-                    💾 Сохранить изменения
-                </button>
-            </div>
-        </form>
+        </div>
     </div>
+    <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/js/bootstrap.bundle.min.js"></script>
+    <script>
+        // Предпросмотр изображения
+        document.getElementById('img').addEventListener('change', function(e) {
+            const file = e.target.files[0]
+            const preview = document.getElementById('preview')
+
+            if (file) {
+                const reader = new FileReader()
+                reader.onload = function(e) {
+                    preview.src = e.target.result
+                    preview.style.display = 'block'
+                }
+                reader.readAsDataURL(file)
+            }
+        })
+    </script>
 </body>
 
 </html>
